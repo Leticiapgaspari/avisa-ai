@@ -1,3 +1,3 @@
-   db.url=
-   db.user=
-   db.password=
+db.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+db.user=rmSEU_RM
+db.password=
