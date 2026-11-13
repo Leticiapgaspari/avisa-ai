@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Seu painel no Avisa Aí: o que está acontecendo no seu bairro e o que pede atenção primeiro.">
+  <title>Painel · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-pagina="privada">
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a href="painel.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <ul>
+          <li><a href="painel.html">Painel</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="relatorios.html">Relatórios</a></li>
+          <li data-so-agente hidden><a href="usuarios.html">Usuários</a></li>
+          <li data-so-agente hidden><a href="gestao.html">Gestão</a></li>
+        </ul>
+      </nav>
+      <div class="area-usuario">
+        <a href="ocorrencias.html#registrar" class="botao botao-cone botao-registrar-topo">
+          <span aria-hidden="true">+</span>
+          <span class="registrar-texto">Registrar ocorrência</span>
+        </a>
+
+        <!--menu da conta-->
+        <div class="menu-conta">
+          <button type="button" class="menu-conta-botao" id="botao-conta"
+                  aria-expanded="false" aria-controls="painel-conta">
+            <span class="visualmente-oculto">Menu da conta: </span>
+            <span class="avatar-usuario" id="avatar-usuario" aria-hidden="true"></span>
+            <span class="menu-conta-texto">
+              <span class="menu-conta-nome" id="nome-usuario"></span>
+              <span class="menu-conta-tipo" id="tipo-usuario"></span>
+            </span>
+            <svg class="menu-conta-seta" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="menu-conta-painel" id="painel-conta" hidden>
+            <div class="menu-conta-cabecalho">
+              <strong id="conta-nome-completo"></strong>
+              <span id="conta-email"></span>
+            </div>
+            <ul class="menu-conta-links">
+              <li><a href="perfil.html">Seu perfil</a></li>
+              <li><a href="perfil.html#seus-avisos">Seus avisos</a></li>
+            </ul>
+            <button type="button" class="menu-conta-sair" id="botao-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pagina-painel">
+    <!--texto e botões vem do inicio.js-->
+    <section class="painel-saudacao" aria-labelledby="titulo-pagina">
+      <div class="painel-largura">
+        <h1 id="titulo-pagina">Olá.</h1>
+        <p id="texto-saudacao"></p>
+        <div class="painel-botoes" id="botoes-saudacao"></div>
+      </div>
+    </section>
+
+    <div class="painel-largura painel-corpo">
+      <section class="painel-situacao" aria-labelledby="titulo-situacao">
+        <h2 id="titulo-situacao">Todos os avisos até agora</h2>
+        <div id="situacao" aria-live="polite">
+          <p class="painel-estado">Carregando...</p>
+        </div>
+      </section>
+
+      <div class="painel-colunas">
+        <!--agente/morador-->
+        <section class="painel-bloco" aria-labelledby="titulo-principal">
+          <h2 id="titulo-principal">Carregando...</h2>
+          <div class="painel-bloco-conteudo" id="conteudo-principal" aria-live="polite">
+            <p class="painel-estado">Carregando...</p>
+          </div>
+        </section>
+
+        <section class="painel-bloco" aria-labelledby="titulo-recentes">
+          <h2 id="titulo-recentes">Avisos recentes</h2>
+          <div class="painel-bloco-conteudo" id="conteudo-recentes" aria-live="polite">
+            <p class="painel-estado">Carregando...</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/inicio.js"></script>
+</body>
+</html>

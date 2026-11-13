@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Cadastro de moradores e agentes do Avisa Aí.">
+  <title>Usuários · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-pagina="so-agente">
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a href="painel.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <ul>
+          <li><a href="painel.html">Painel</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="relatorios.html">Relatórios</a></li>
+          <li data-so-agente hidden><a href="usuarios.html">Usuários</a></li>
+          <li data-so-agente hidden><a href="gestao.html">Gestão</a></li>
+        </ul>
+      </nav>
+      <div class="area-usuario">
+        <a href="ocorrencias.html#registrar" class="botao botao-cone botao-registrar-topo">
+          <span aria-hidden="true">+</span>
+          <span class="registrar-texto">Registrar ocorrência</span>
+        </a>
+
+        <!--menu da conta-->
+        <div class="menu-conta">
+          <button type="button" class="menu-conta-botao" id="botao-conta"
+                  aria-expanded="false" aria-controls="painel-conta">
+            <span class="visualmente-oculto">Menu da conta: </span>
+            <span class="avatar-usuario" id="avatar-usuario" aria-hidden="true"></span>
+            <span class="menu-conta-texto">
+              <span class="menu-conta-nome" id="nome-usuario"></span>
+              <span class="menu-conta-tipo" id="tipo-usuario"></span>
+            </span>
+            <svg class="menu-conta-seta" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="menu-conta-painel" id="painel-conta" hidden>
+            <div class="menu-conta-cabecalho">
+              <strong id="conta-nome-completo"></strong>
+              <span id="conta-email"></span>
+            </div>
+            <ul class="menu-conta-links">
+              <li><a href="perfil.html">Seu perfil</a></li>
+              <li><a href="perfil.html#seus-avisos">Seus avisos</a></li>
+            </ul>
+            <button type="button" class="menu-conta-sair" id="botao-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pilha pagina-usuarios">
+    <section class="cabecalho-pagina" aria-labelledby="titulo-pagina">
+      <h1 id="titulo-pagina">Usuários</h1>
+      <p>Moradores criam a própria conta. Contas de agente só são criadas aqui.</p>
+    </section>
+
+    <section class="painel" aria-labelledby="titulo-formulario">
+      <h2 id="titulo-formulario">Cadastrar usuário</h2>
+
+      <form id="form-usuario" novalidate>
+        <div class="grade-campos">
+          <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" maxlength="100" autocomplete="name"
+                   aria-describedby="erro-nome">
+            <p class="erro-campo" id="erro-nome"></p>
+          </div>
+
+          <div class="campo">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" maxlength="120" autocomplete="email"
+                   placeholder="nome@exemplo.com" aria-describedby="erro-email">
+            <p class="erro-campo" id="erro-email"></p>
+          </div>
+
+          <div class="campo">
+            <label for="tipo">Tipo</label>
+            <select id="tipo" name="tipo" aria-describedby="erro-tipo">
+              <option value="">Escolha o tipo</option>
+              <option value="CIDADAO">Morador</option>
+              <option value="AGENTE">Agente</option>
+            </select>
+            <p class="erro-campo" id="erro-tipo"></p>
+          </div>
+
+          <div class="campo">
+            <label for="bairro">Bairro</label>
+            <select id="bairro" name="bairro" aria-describedby="erro-bairro">
+              <option value="">Carregando...</option>
+            </select>
+            <p class="erro-campo" id="erro-bairro"></p>
+          </div>
+        </div>
+
+        <div class="botoes-formulario">
+          <button type="submit" class="botao botao-cone" id="botao-enviar">Cadastrar</button>
+          <button type="button" class="botao botao-leve" id="botao-cancelar" hidden>Cancelar</button>
+        </div>
+        <p class="mensagem" id="mensagem-formulario" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section class="painel" aria-labelledby="titulo-lista">
+      <div class="titulo-com-acao">
+        <h2 id="titulo-lista">Usuários cadastrados</h2>
+        <span class="texto-suave" id="total-lista" aria-live="polite"></span>
+      </div>
+      <p class="mensagem" id="mensagem-lista" role="status" aria-live="polite"></p>
+
+      <table class="tabela-cartoes">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Bairro</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="corpo-usuarios">
+          <tr><td colspan="5" class="lista-estado">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/usuarios.js"></script>
+</body>
+</html>

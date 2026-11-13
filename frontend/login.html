@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Entre ou crie sua conta no Avisa Aí.">
+  <title>Entrar · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <main id="conteudo" class="pagina-login">
+    <!--section esquerda-->
+    <section class="login-area" aria-label="Acesso à conta">
+      <div class="login-topo">
+        <a href="index.html" class="login-marca">
+          <img src="img/logo-simbolo.svg" alt="" width="50" height="32">
+          <span>Avisa Aí</span>
+        </a>
+        <a href="index.html" class="login-voltar">Voltar para o início</a>
+      </div>
+
+      <div class="login-centro">
+        <div class="cartao-login">
+          <div class="abas" role="tablist" aria-label="Entrar ou criar conta">
+            <button type="button" class="aba" id="aba-entrar" role="tab" tabindex="0"
+                    aria-controls="caixa-entrar" aria-selected="true">Entrar</button>
+            <button type="button" class="aba" id="aba-cadastro" role="tab" tabindex="-1"
+                    aria-controls="caixa-cadastro" aria-selected="false">Criar conta</button>
+          </div>
+
+          <!--Entrar-->
+          <div class="caixa-login" id="caixa-entrar" role="tabpanel" aria-labelledby="aba-entrar">
+            <h1>Que bom te ver de novo</h1>
+            <p class="texto-suave">Entre com o e-mail e a senha que você cadastrou.</p>
+
+            <form id="form-entrar" novalidate>
+              <div class="campo">
+                <label for="email-entrar">E-mail</label>
+                <input type="email" id="email-entrar" name="email" maxlength="120" autocomplete="email"
+                       aria-describedby="erro-email-entrar">
+                <p class="erro-campo" id="erro-email-entrar"></p>
+              </div>
+
+              <div class="campo">
+                <label for="senha-entrar">Senha</label>
+                <div class="campo-senha">
+                  <input type="password" id="senha-entrar" name="senha" autocomplete="current-password"
+                         aria-describedby="erro-senha-entrar">
+                  <button type="button" class="botao-mostrar" id="mostrar-senha-entrar"
+                          aria-controls="senha-entrar" aria-pressed="false">Mostrar</button>
+                </div>
+                <p class="erro-campo" id="erro-senha-entrar"></p>
+              </div>
+
+              <button type="submit" class="botao botao-cone botao-largo" id="botao-entrar">Entrar</button>
+              <p class="mensagem" id="mensagem-entrar" role="status" aria-live="polite"></p>
+            </form>
+
+            <div class="troca-aba">
+              <p>Ainda não tem conta?</p>
+              <button type="button" class="botao botao-linha botao-largo" data-ir-para="cadastro">Criar conta</button>
+            </div>
+          </div>
+
+          <!--Criar conta-->
+          <div class="caixa-login" id="caixa-cadastro" role="tabpanel" aria-labelledby="aba-cadastro" hidden>
+            <h1>Crie sua conta</h1>
+            <p class="texto-suave">Leva menos de um minuto. Você só precisa de <span class="sem-quebra">um e-mail.</span></p>
+
+            <form id="form-cadastro" novalidate>
+              <div class="campo">
+                <label for="nome-cadastro">Nome</label>
+                <input type="text" id="nome-cadastro" name="nome" maxlength="100" autocomplete="name"
+                       aria-describedby="erro-nome-cadastro">
+                <p class="erro-campo" id="erro-nome-cadastro"></p>
+              </div>
+
+              <div class="campo">
+                <label for="email-cadastro">E-mail</label>
+                <input type="email" id="email-cadastro" name="email" maxlength="120" autocomplete="email"
+                       aria-describedby="erro-email-cadastro">
+                <p class="erro-campo" id="erro-email-cadastro"></p>
+              </div>
+
+              <div class="campo">
+                <label for="bairro-cadastro">Bairro</label>
+                <select id="bairro-cadastro" name="bairro" aria-describedby="erro-bairro-cadastro">
+                  <option value="">Carregando...</option>
+                </select>
+                <p class="erro-campo" id="erro-bairro-cadastro"></p>
+              </div>
+
+              <div class="campos-lado">
+                <div class="campo">
+                  <label for="senha-cadastro">Senha</label>
+                  <input type="password" id="senha-cadastro" name="senha" autocomplete="new-password"
+                         aria-describedby="erro-senha-cadastro">
+                  <p class="erro-campo" id="erro-senha-cadastro"></p>
+                </div>
+
+                <div class="campo">
+                  <label for="confirmar-cadastro">Confirmar senha</label>
+                  <input type="password" id="confirmar-cadastro" name="confirmar" autocomplete="new-password"
+                         aria-describedby="erro-confirmar-cadastro">
+                  <p class="erro-campo" id="erro-confirmar-cadastro"></p>
+                </div>
+              </div>
+
+              <button type="submit" class="botao botao-cone botao-largo" id="botao-cadastrar">Criar conta</button>
+              <p class="mensagem" id="mensagem-cadastro" role="status" aria-live="polite"></p>
+              <p class="nota-pequena">Contas de agente são criadas pela equipe da prefeitura. Se você trabalha lá, peça o acesso ao responsável pela sua equipe.</p>
+            </form>
+
+            <div class="troca-aba">
+              <p>Já tem conta?</p>
+              <button type="button" class="botao botao-linha botao-largo" data-ir-para="entrar">Entrar</button>
+            </div>
+          </div>
+
+          <!--dados de testes-->
+          <details class="contas-teste" id="contas-teste" hidden>
+            <summary>Contas para testar</summary>
+            <ul>
+              <li>Morador: ana.souza@exemplo.com</li>
+              <li>Agente: patricia.mendes@exemplo.com</li>
+              <li>Senha das duas: avisa123</li>
+            </ul>
+          </details>
+        </div>
+      </div>
+
+      <p class="login-credito">Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+    </section>
+
+    <!--section direita-->
+    <div class="login-lado">
+      <div class="login-grupo">
+        <img src="img/login-comunidade.svg" alt="" class="login-ilustracao" width="908" height="525">
+        <div class="login-chamada">
+          <h2>Quem mora vê primeiro.</h2>
+          <p>Um aviso sozinho some. Com o apoio dos vizinhos, ele chega mais longe.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

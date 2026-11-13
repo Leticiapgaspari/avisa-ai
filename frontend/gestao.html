@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gestão de categorias e bairros do Avisa Aí, restrita a agentes.">
+  <title>Gestão · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-pagina="so-agente">
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a href="painel.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <ul>
+          <li><a href="painel.html">Painel</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="relatorios.html">Relatórios</a></li>
+          <li data-so-agente hidden><a href="usuarios.html">Usuários</a></li>
+          <li data-so-agente hidden><a href="gestao.html">Gestão</a></li>
+        </ul>
+      </nav>
+      <div class="area-usuario">
+        <a href="ocorrencias.html#registrar" class="botao botao-cone botao-registrar-topo">
+          <span aria-hidden="true">+</span>
+          <span class="registrar-texto">Registrar ocorrência</span>
+        </a>
+
+        <!--menu da conta-->
+        <div class="menu-conta">
+          <button type="button" class="menu-conta-botao" id="botao-conta"
+                  aria-expanded="false" aria-controls="painel-conta">
+            <span class="visualmente-oculto">Menu da conta: </span>
+            <span class="avatar-usuario" id="avatar-usuario" aria-hidden="true"></span>
+            <span class="menu-conta-texto">
+              <span class="menu-conta-nome" id="nome-usuario"></span>
+              <span class="menu-conta-tipo" id="tipo-usuario"></span>
+            </span>
+            <svg class="menu-conta-seta" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="menu-conta-painel" id="painel-conta" hidden>
+            <div class="menu-conta-cabecalho">
+              <strong id="conta-nome-completo"></strong>
+              <span id="conta-email"></span>
+            </div>
+            <ul class="menu-conta-links">
+              <li><a href="perfil.html">Seu perfil</a></li>
+              <li><a href="perfil.html#seus-avisos">Seus avisos</a></li>
+            </ul>
+            <button type="button" class="menu-conta-sair" id="botao-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pilha pagina-gestao">
+    <section class="cabecalho-pagina" aria-labelledby="titulo-pagina">
+      <h1 id="titulo-pagina">Gestão</h1>
+      <p>Organize as categorias e os bairros que aparecem nos formulários de ocorrência e de cadastro.</p>
+    </section>
+
+    <div id="conteudo-gestao" class="colunas colunas-iguais">
+      <section class="painel" aria-labelledby="titulo-categoria">
+        <div class="gestao-titulo">
+          <h2 id="titulo-categoria">Categorias</h2>
+          <span class="texto-suave" id="total-categoria"></span>
+        </div>
+        <form id="form-categoria" novalidate>
+          <div class="gestao-form-linha">
+            <div class="campo">
+              <label for="nome-categoria" class="visualmente-oculto">Nome da categoria</label>
+              <input type="text" id="nome-categoria" maxlength="80" autocomplete="off"
+                     placeholder="Nova categoria" aria-describedby="erro-nome-categoria">
+            </div>
+            <button type="submit" class="botao botao-cone">Adicionar</button>
+            <button type="button" class="botao botao-leve" id="cancelar-categoria" hidden>Cancelar</button>
+          </div>
+          <p class="erro-campo" id="erro-nome-categoria"></p>
+          <p class="mensagem" id="mensagem-categoria" role="status" aria-live="polite"></p>
+        </form>
+        <ul class="lista-simples" id="lista-categoria" aria-live="polite">
+          <li class="lista-estado">Carregando...</li>
+        </ul>
+      </section>
+
+      <section class="painel" aria-labelledby="titulo-bairro">
+        <div class="gestao-titulo">
+          <h2 id="titulo-bairro">Bairros</h2>
+          <span class="texto-suave" id="total-bairro"></span>
+        </div>
+        <form id="form-bairro" novalidate>
+          <div class="gestao-form-linha">
+            <div class="campo">
+              <label for="nome-bairro" class="visualmente-oculto">Nome do bairro</label>
+              <input type="text" id="nome-bairro" maxlength="80" autocomplete="off"
+                     placeholder="Novo bairro" aria-describedby="erro-nome-bairro">
+            </div>
+            <button type="submit" class="botao botao-cone">Adicionar</button>
+            <button type="button" class="botao botao-leve" id="cancelar-bairro" hidden>Cancelar</button>
+          </div>
+          <p class="erro-campo" id="erro-nome-bairro"></p>
+          <p class="mensagem" id="mensagem-bairro" role="status" aria-live="polite"></p>
+        </form>
+        <ul class="lista-simples" id="lista-bairro" aria-live="polite">
+          <li class="lista-estado">Carregando...</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/gestao.js"></script>
+</body>
+</html>
