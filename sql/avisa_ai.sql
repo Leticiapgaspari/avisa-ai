@@ -35,6 +35,7 @@ CREATE TABLE USUARIO (
   ID_USUARIO NUMBER GENERATED ALWAYS AS IDENTITY,
   NOME VARCHAR2(100) NOT NULL,
   EMAIL VARCHAR2(120) NOT NULL,
+  SENHA VARCHAR2(100) NOT NULL,
   TIPO VARCHAR2(10) NOT NULL,
   ID_BAIRRO NUMBER NOT NULL,
   
@@ -88,14 +89,14 @@ INSERT INTO CATEGORIA (NOME) VALUES ('Calçada e acessibilidade');
 INSERT INTO CATEGORIA (NOME) VALUES ('Árvore e poda');
 INSERT INTO CATEGORIA (NOME) VALUES ('Sinalização de trânsito');
 
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Ana Beatriz Souza',   'ana.souza@exemplo.com',        'CIDADAO', 1);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Carlos Eduardo Lima', 'carlos.lima@exemplo.com',      'CIDADAO', 2);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Mariana Oliveira',    'mariana.oliveira@exemplo.com', 'CIDADAO', 2);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('João Pedro Santos',   'joao.santos@exemplo.com',      'CIDADAO', 3);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Fernanda Costa',      'fernanda.costa@exemplo.com',   'CIDADAO', 4);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Rafael Almeida',      'rafael.almeida@exemplo.com',   'CIDADAO', 5);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Patrícia Mendes',     'patricia.mendes@exemplo.com',  'AGENTE',  1);
-INSERT INTO USUARIO (NOME, EMAIL, TIPO, ID_BAIRRO) VALUES ('Roberto Nunes',       'roberto.nunes@exemplo.com',    'AGENTE',  3);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Ana Beatriz Souza',   'ana.souza@exemplo.com',        'ana12345',     'CIDADAO', 1);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Carlos Eduardo Lima', 'carlos.lima@exemplo.com',      'carlos12345',  'CIDADAO', 2);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Mariana Oliveira',    'mariana.oliveira@exemplo.com', 'mariana12345', 'CIDADAO', 2);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('João Pedro Santos',   'joao.santos@exemplo.com',      'joao12345',    'CIDADAO', 3);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Fernanda Costa',      'fernanda.costa@exemplo.com',   'fernanda12345','CIDADAO', 4);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Rafael Almeida',      'rafael.almeida@exemplo.com',   'rafael12345',  'CIDADAO', 5);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Patrícia Mendes',     'patricia.mendes@exemplo.com',  'patricia12345','AGENTE',  1);
+INSERT INTO USUARIO (NOME, EMAIL, SENHA, TIPO, ID_BAIRRO) VALUES ('Roberto Nunes',       'roberto.nunes@exemplo.com',    'roberto12345', 'AGENTE',  3);
 
 INSERT INTO OCORRENCIA (TITULO, DESCRICAO, ENDERECO, STATUS, DATA_ABERTURA, ID_USUARIO, ID_CATEGORIA, ID_BAIRRO)
 VALUES ('Buraco grande na Rua das Acácias', 'Buraco com cerca de 1 metro, carros desviam para a contramão',
