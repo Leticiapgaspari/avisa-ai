@@ -1,1 +1,151 @@
-<!-- em construção -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Avisa Aí: registre buracos, postes apagados e entulho na calçada, veja quem também viu e acompanhe até resolver.">
+  <title>Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo topo-inicio">
+    <div class="topo-conteudo">
+      <a href="index.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="acoes-publicas" aria-label="Acesso à conta">
+        <a href="login.html#entrar" class="link-claro">Entrar</a>
+        <a href="login.html#cadastro" class="botao botao-cone">Criar conta</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pagina-inicial">
+
+    <!--Hero-->
+    <section class="hero" aria-labelledby="titulo-pagina">
+      <div class="hero-conteudo">
+        <div class="hero-texto">
+          <h1 id="titulo-pagina">Viu um problema na rua? Avisa aí.</h1>
+          <p>Buraco, poste apagado, entulho na calçada. Você registra em menos de um minuto, os vizinhos confirmam que também viram e os agentes públicos acompanham até resolver.</p>
+          <div class="hero-botoes">
+            <a href="login.html#cadastro" class="botao botao-cone botao-grande">Criar minha conta</a>
+            <a href="login.html#entrar" class="botao botao-contorno botao-grande">Já tenho conta</a>
+          </div>
+        </div>
+
+        <!--ilustração-->
+        <div class="cena" aria-hidden="true">
+          <div class="placa">
+            <span class="placa-rua">R. das Acácias</span>
+            <span class="placa-bairro">Jardim das Flores</span>
+          </div>
+          <article class="cartao-demo">
+            <div class="cartao-demo-topo">
+              <h2>Buraco grande na Rua das Acácias</h2>
+              <span class="etiqueta etiqueta-aberta">Aberta</span>
+            </div>
+            <p class="cartao-demo-meta">Buraco na via, em frente ao número 120</p>
+            <div class="apoios">
+              <ul class="vizinhos">
+                <li class="v1">C</li>
+                <li class="v2">M</li>
+                <li class="v3">J</li>
+                <li class="v4">F</li>
+                <li class="v5">R</li>
+              </ul>
+              <span class="apoios-texto">5 vizinhos também viram</span>
+            </div>
+            <span class="botao-demo">Também vi isso</span>
+          </article>
+        </div>
+      </div>
+      <div class="faixa-rua"></div>
+    </section>
+
+    <!--Todo mundo ve-->
+    <section class="problema" aria-labelledby="titulo-problema">
+      <div class="conteudo duas-colunas">
+        <div class="problema-texto">
+          <h2 id="titulo-problema">Todo mundo vê. Quase ninguém avisa.</h2>
+          <p>O poste está apagado há três semanas e cada morador acha que alguém já ligou para a prefeitura. Quem liga recebe um número de protocolo e nunca mais sabe o que aconteceu. O problema continua lá, e ninguém consegue dizer se ele é o mais urgente da rua ou o décimo da fila.</p>
+        </div>
+        <figure class="dado">
+          <p class="dado-numero">119,9 milhões</p>
+          <figcaption>de brasileiros moram em ruas sem rampa para cadeirante. <cite>IBGE, Censo 2022</cite></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!--Como funciona-->
+    <section class="como" aria-labelledby="titulo-como">
+      <div class="conteudo">
+        <h2 id="titulo-como">Como funciona</h2>
+        <ol class="trajeto">
+          <li>
+            <span class="parada">1</span>
+            <h3>Avise</h3>
+            <p>Diga o que é, onde fica e de que tipo é: buraco, iluminação, lixo, calçada, árvore ou sinalização.</p>
+          </li>
+          <li>
+            <span class="parada">2</span>
+            <h3>Apoie</h3>
+            <p>Passou pelo mesmo problema? Toque em "Também vi isso". Cada apoio mostra que aquilo incomoda mais gente.</p>
+          </li>
+          <li>
+            <span class="parada">3</span>
+            <h3>Acompanhe</h3>
+            <p>O agente responsável muda o status para em andamento e depois para resolvida. Você vê cada mudança na lista.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!--Os dois lados-->
+    <section class="lados" aria-labelledby="titulo-lados">
+      <div class="conteudo">
+        <h2 id="titulo-lados">Feito para os dois lados da rua</h2>
+        <div class="calcadas">
+          <div>
+            <h3>Para quem mora no bairro</h3>
+            <p>Um lugar para avisar sem ligar, sem esperar na linha e sem repetir a mesma reclamação. O aviso fica registrado e qualquer vizinho pode ver.</p>
+          </div>
+          <div class="canteiro" aria-hidden="true"></div>
+          <div>
+            <h3>Para quem cuida da cidade</h3>
+            <p>Uma lista do que os moradores estão vendo, com endereço, categoria e quantas pessoas confirmaram. Fica mais fácil decidir por onde começar.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--Ultima chamada-->
+    <section class="chamada" aria-labelledby="titulo-chamada">
+      <div class="conteudo">
+        <h2 id="titulo-chamada">Tem alguma coisa na sua rua que já devia ter sido consertada?</h2>
+        <a href="login.html#cadastro" class="botao botao-cone botao-grande">Avisar agora</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

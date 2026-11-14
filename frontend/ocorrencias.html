@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Registre, apoie e acompanhe as ocorrências do seu bairro.">
+  <title>Ocorrências · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-pagina="privada">
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a href="painel.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <ul>
+          <li><a href="painel.html">Painel</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="relatorios.html">Relatórios</a></li>
+          <li data-so-agente hidden><a href="usuarios.html">Usuários</a></li>
+          <li data-so-agente hidden><a href="gestao.html">Gestão</a></li>
+        </ul>
+      </nav>
+      <div class="area-usuario">
+        <a href="ocorrencias.html#registrar" class="botao botao-cone botao-registrar-topo">
+          <span aria-hidden="true">+</span>
+          <span class="registrar-texto">Registrar ocorrência</span>
+        </a>
+
+        <!--menu da conta-->
+        <div class="menu-conta">
+          <button type="button" class="menu-conta-botao" id="botao-conta"
+                  aria-expanded="false" aria-controls="painel-conta">
+            <span class="visualmente-oculto">Menu da conta: </span>
+            <span class="avatar-usuario" id="avatar-usuario" aria-hidden="true"></span>
+            <span class="menu-conta-texto">
+              <span class="menu-conta-nome" id="nome-usuario"></span>
+              <span class="menu-conta-tipo" id="tipo-usuario"></span>
+            </span>
+            <svg class="menu-conta-seta" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="menu-conta-painel" id="painel-conta" hidden>
+            <div class="menu-conta-cabecalho">
+              <strong id="conta-nome-completo"></strong>
+              <span id="conta-email"></span>
+            </div>
+            <ul class="menu-conta-links">
+              <li><a href="perfil.html">Seu perfil</a></li>
+              <li><a href="perfil.html#seus-avisos">Seus avisos</a></li>
+            </ul>
+            <button type="button" class="menu-conta-sair" id="botao-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pagina-ocorrencias">
+    <section class="cabecalho-pagina" aria-labelledby="titulo-pagina">
+      <h1 id="titulo-pagina">Ocorrências</h1>
+      <p>Registre um problema ou apoie o que os vizinhos já avisaram.</p>
+    </section>
+
+    <div class="colunas">
+      <!--no celular o formulário começa fechado-->
+      <button type="button" class="botao botao-cone botao-largo" id="abrir-formulario"
+              aria-expanded="false" aria-controls="painel-formulario" hidden>Registrar ocorrência</button>
+      <section class="painel painel-formulario" id="painel-formulario" aria-labelledby="titulo-formulario">
+        <h2 id="titulo-formulario">Registrar ocorrência</h2>
+        <p class="aviso-usuario" hidden></p>
+
+        <form id="form-ocorrencia" novalidate>
+          <fieldset data-requer-usuario>
+            <div class="campo">
+              <label for="titulo">Título</label>
+              <input type="text" id="titulo" name="titulo" maxlength="120" autocomplete="off"
+                     placeholder="Ex.: Buraco grande na Rua das Acácias" aria-describedby="erro-titulo">
+              <p class="erro-campo" id="erro-titulo"></p>
+            </div>
+
+            <div class="campo">
+              <label for="descricao">
+                Descrição <span class="opcional">(opcional)</span>
+                <span class="contador" id="contador-descricao">0/500</span>
+              </label>
+              <textarea id="descricao" name="descricao" maxlength="500" rows="3"
+                        placeholder="Explique o risco ou o incômodo" aria-describedby="erro-descricao"></textarea>
+              <p class="erro-campo" id="erro-descricao"></p>
+            </div>
+
+            <div class="campo">
+              <label for="endereco">Endereço</label>
+              <input type="text" id="endereco" name="endereco" maxlength="200" autocomplete="off"
+                     placeholder="Rua, número ou ponto de referência" aria-describedby="erro-endereco">
+              <p class="erro-campo" id="erro-endereco"></p>
+            </div>
+
+            <div class="campo">
+              <label for="categoria">Categoria</label>
+              <select id="categoria" name="categoria" aria-describedby="erro-categoria">
+                <option value="">Carregando...</option>
+              </select>
+              <p class="erro-campo" id="erro-categoria"></p>
+            </div>
+
+            <div class="campo">
+              <label for="bairro">Bairro</label>
+              <select id="bairro" name="bairro" aria-describedby="erro-bairro">
+                <option value="">Carregando...</option>
+              </select>
+              <p class="erro-campo" id="erro-bairro"></p>
+            </div>
+
+            <div class="botoes-formulario">
+              <button type="submit" class="botao botao-cone botao-largo" id="botao-enviar">Registrar</button>
+              <button type="button" class="botao botao-secundario" id="botao-cancelar" hidden>Cancelar</button>
+            </div>
+          </fieldset>
+          <p class="mensagem" id="mensagem-formulario" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="pilha-lista" aria-labelledby="titulo-lista">
+        <div class="titulo-com-acao">
+          <h2 id="titulo-lista">Ocorrências registradas</h2>
+          <span class="texto-suave" id="total-lista" aria-live="polite"></span>
+        </div>
+
+        <div class="filtros-linha">
+          <div class="filtro-status-botoes" role="group" aria-label="Filtrar por status">
+            <button type="button" class="filtro-status" data-status="" aria-pressed="true">Todas <span class="filtro-total"></span></button>
+            <button type="button" class="filtro-status" data-status="ABERTA" aria-pressed="false">Abertas <span class="filtro-total"></span></button>
+            <button type="button" class="filtro-status" data-status="EM_ANDAMENTO" aria-pressed="false">Em andamento <span class="filtro-total"></span></button>
+            <button type="button" class="filtro-status" data-status="RESOLVIDA" aria-pressed="false">Resolvidas <span class="filtro-total"></span></button>
+          </div>
+
+          <div class="campo filtro-bairro-campo">
+            <label for="filtro-bairro">Bairro</label>
+            <select id="filtro-bairro">
+              <option value="">Todos</option>
+            </select>
+          </div>
+
+          <div class="campo" hidden>
+            <label for="filtro-status">Status</label>
+            <select id="filtro-status">
+              <option value="">Todos</option>
+              <option value="ABERTA">Aberta</option>
+              <option value="EM_ANDAMENTO">Em andamento</option>
+              <option value="RESOLVIDA">Resolvida</option>
+            </select>
+          </div>
+        </div>
+
+        <p class="mensagem" id="mensagem-lista" role="status" aria-live="polite"></p>
+        <ul class="lista-cartoes" id="lista-ocorrencias" aria-live="polite">
+          <li class="lista-estado">Carregando...</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/ocorrencias.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Seu perfil no Avisa Aí: seus dados, sua senha e os avisos que você registrou.">
+  <title>Seu perfil · Avisa Aí</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+</head>
+<body data-pagina="privada">
+  <a href="#conteudo" class="pular-conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a href="painel.html" class="marca">
+        <img src="img/logo-simbolo.svg" alt="" width="56" height="36">
+        <span>Avisa Aí</span>
+      </a>
+      <nav class="menu" aria-label="Menu principal">
+        <ul>
+          <li><a href="painel.html">Painel</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="relatorios.html">Relatórios</a></li>
+          <li data-so-agente hidden><a href="usuarios.html">Usuários</a></li>
+          <li data-so-agente hidden><a href="gestao.html">Gestão</a></li>
+        </ul>
+      </nav>
+      <div class="area-usuario">
+        <a href="ocorrencias.html#registrar" class="botao botao-cone botao-registrar-topo">
+          <span aria-hidden="true">+</span>
+          <span class="registrar-texto">Registrar ocorrência</span>
+        </a>
+
+        <!--menu da conta-->
+        <div class="menu-conta">
+          <button type="button" class="menu-conta-botao" id="botao-conta"
+                  aria-expanded="false" aria-controls="painel-conta">
+            <span class="visualmente-oculto">Menu da conta: </span>
+            <span class="avatar-usuario" id="avatar-usuario" aria-hidden="true"></span>
+            <span class="menu-conta-texto">
+              <span class="menu-conta-nome" id="nome-usuario"></span>
+              <span class="menu-conta-tipo" id="tipo-usuario"></span>
+            </span>
+            <svg class="menu-conta-seta" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="menu-conta-painel" id="painel-conta" hidden>
+            <div class="menu-conta-cabecalho">
+              <strong id="conta-nome-completo"></strong>
+              <span id="conta-email"></span>
+            </div>
+            <ul class="menu-conta-links">
+              <li><a href="perfil.html">Seu perfil</a></li>
+              <li><a href="perfil.html#seus-avisos">Seus avisos</a></li>
+            </ul>
+            <button type="button" class="menu-conta-sair" id="botao-sair">Sair</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="pilha pagina-perfil">
+    <section class="cabecalho-pagina" aria-labelledby="titulo-pagina">
+      <h1 id="titulo-pagina">Seu perfil</h1>
+      <p>Mantenha seus dados em dia. O bairro que você escolher aqui é o que aparece no seu painel.</p>
+    </section>
+
+    <div class="perfil-colunas">
+      <div class="perfil-coluna">
+        <!--dados-->
+        <section class="painel" aria-labelledby="titulo-dados">
+          <h2 id="titulo-dados">Seus dados</h2>
+
+          <div class="perfil-identidade">
+            <span class="perfil-avatar" id="perfil-inicial" aria-hidden="true"></span>
+            <div class="perfil-identidade-texto">
+              <strong id="perfil-nome-completo">Carregando...</strong>
+              <span class="etiqueta-papel" id="perfil-tipo"></span>
+            </div>
+          </div>
+
+          <form id="form-dados" novalidate>
+            <fieldset id="campos-dados" disabled>
+              <div class="campo">
+                <label for="perfil-nome">Nome</label>
+                <input type="text" id="perfil-nome" name="nome" maxlength="100" autocomplete="name"
+                       aria-describedby="erro-perfil-nome">
+                <p class="erro-campo" id="erro-perfil-nome"></p>
+              </div>
+
+              <div class="campo">
+                <label for="perfil-email">E-mail</label>
+                <input type="email" id="perfil-email" name="email" maxlength="120" autocomplete="email"
+                       aria-describedby="erro-perfil-email">
+                <p class="erro-campo" id="erro-perfil-email"></p>
+              </div>
+
+              <div class="campo">
+                <label for="perfil-bairro">Bairro</label>
+                <select id="perfil-bairro" name="bairro" aria-describedby="erro-perfil-bairro">
+                  <option value="">Carregando...</option>
+                </select>
+                <p class="erro-campo" id="erro-perfil-bairro"></p>
+              </div>
+
+              <p class="perfil-tipo-conta" id="perfil-tipo-conta"></p>
+
+              <button type="submit" class="botao botao-cone botao-largo" id="botao-salvar-dados" disabled>Salvar alterações</button>
+            </fieldset>
+            <p class="mensagem" id="mensagem-dados" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <!--Trocar senha-->
+        <section class="painel" aria-labelledby="titulo-senha">
+          <h2 id="titulo-senha">Trocar senha</h2>
+
+          <form id="form-senha" novalidate>
+            <div class="campo">
+              <label for="senha-atual">Senha atual</label>
+              <div class="campo-senha">
+                <input type="password" id="senha-atual" name="senhaAtual" autocomplete="current-password"
+                       aria-describedby="erro-senha-atual">
+                <button type="button" class="botao-mostrar" aria-controls="senha-atual" aria-pressed="false">Mostrar</button>
+              </div>
+              <p class="erro-campo" id="erro-senha-atual"></p>
+            </div>
+
+            <div class="campo">
+              <label for="senha-nova">Nova senha</label>
+              <div class="campo-senha">
+                <input type="password" id="senha-nova" name="novaSenha" autocomplete="new-password"
+                       aria-describedby="erro-senha-nova">
+                <button type="button" class="botao-mostrar" aria-controls="senha-nova" aria-pressed="false">Mostrar</button>
+              </div>
+              <p class="erro-campo" id="erro-senha-nova"></p>
+            </div>
+
+            <div class="campo">
+              <label for="senha-confirmar">Confirmar nova senha</label>
+              <div class="campo-senha">
+                <input type="password" id="senha-confirmar" name="confirmar" autocomplete="new-password"
+                       aria-describedby="erro-senha-confirmar">
+                <button type="button" class="botao-mostrar" aria-controls="senha-confirmar" aria-pressed="false">Mostrar</button>
+              </div>
+              <p class="erro-campo" id="erro-senha-confirmar"></p>
+            </div>
+
+            <button type="submit" class="botao botao-leve botao-leve-contorno" id="botao-trocar-senha">Trocar senha</button>
+            <p class="mensagem" id="mensagem-senha" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+
+      <!--avisos-->
+      <section class="painel" id="seus-avisos" aria-labelledby="titulo-avisos">
+        <h2 id="titulo-avisos">Seus avisos</h2>
+        <div id="meus-avisos" aria-live="polite">
+          <p class="texto-suave">Carregando...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="rodape-inicio">
+    <div class="rodape-inicio-conteudo">
+      <div class="rodape-inicio-marca">
+        <img src="img/logo-simbolo.svg" alt="" width="44" height="28">
+        <div>
+          <strong>Avisa Aí</strong>
+          <span>Também vi isso.</span>
+        </div>
+      </div>
+      <div class="rodape-inicio-info">
+        <p>Projeto acadêmico da Global Solution FIAP 2026/2.</p>
+        <p>Alinhado ao ODS 11 da ONU, que pede cidades mais seguras e mais bem cuidadas, com a participação de quem mora nelas.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/sessao.js"></script>
+  <script src="js/perfil.js"></script>
+</body>
+</html>
