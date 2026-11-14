@@ -13,12 +13,18 @@ import br.com.avisaai.api.RelatorioHandler;
 import br.com.avisaai.api.Servidor;
 import br.com.avisaai.api.UsuarioHandler;
 import br.com.avisaai.dao.ApoioDao;
+import br.com.avisaai.dao.ApoioDaoJdbc;
 import br.com.avisaai.dao.BairroDao;
+import br.com.avisaai.dao.BairroDaoJdbc;
 import br.com.avisaai.dao.CategoriaDao;
+import br.com.avisaai.dao.CategoriaDaoJdbc;
 import br.com.avisaai.dao.ConnectionFactory;
 import br.com.avisaai.dao.OcorrenciaDao;
+import br.com.avisaai.dao.OcorrenciaDaoJdbc;
 import br.com.avisaai.dao.RelatorioDao;
+import br.com.avisaai.dao.RelatorioDaoJdbc;
 import br.com.avisaai.dao.UsuarioDao;
+import br.com.avisaai.dao.UsuarioDaoJdbc;
 import br.com.avisaai.dao.memoria.ApoioDaoMemoria;
 import br.com.avisaai.dao.memoria.BairroDaoMemoria;
 import br.com.avisaai.dao.memoria.BancoMemoria;
@@ -39,23 +45,43 @@ public class Main {
 
     public static void main(String[] args) {
         int porta = PORTA_PADRAO;
-        if (args.length > 0) {
-            try {
-                porta = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
-                System.err.println("Porta inválida: " + args[0] + ". Usando " + PORTA_PADRAO + ".");
+        boolean emMemoria = false;
+        for (String arg : args) {
+            if ("--memoria".equals(arg)) {
+                emMemoria = true;
+            } else {
+                try {
+                    porta = Integer.parseInt(arg);
+                } catch (NumberFormatException e) {
+                    System.err.println("Argumento inválido: " + arg + ". Use a porta (ex.: 8081) e/ou --memoria.");
+                }
             }
         }
 
-        // Persistência provisória em memória: trocar pelas implementações JDBC na integração com o banco.
-        BancoMemoria banco = new BancoMemoria();
-        banco.carregarDadosDeExemplo();
-        BairroDao bairroDao = new BairroDaoMemoria(banco);
-        CategoriaDao categoriaDao = new CategoriaDaoMemoria(banco);
-        UsuarioDao usuarioDao = new UsuarioDaoMemoria(banco);
-        OcorrenciaDao ocorrenciaDao = new OcorrenciaDaoMemoria(banco);
-        ApoioDao apoioDao = new ApoioDaoMemoria(banco);
-        RelatorioDao relatorioDao = new RelatorioDaoMemoria(banco);
+        BairroDao bairroDao;
+        CategoriaDao categoriaDao;
+        UsuarioDao usuarioDao;
+        OcorrenciaDao ocorrenciaDao;
+        ApoioDao apoioDao;
+        RelatorioDao relatorioDao;
+        if (emMemoria) {
+            // Modo provisório, para desenvolver sem banco: dados de exemplo em memória.
+            BancoMemoria banco = new BancoMemoria();
+            banco.carregarDadosDeExemplo();
+            bairroDao = new BairroDaoMemoria(banco);
+            categoriaDao = new CategoriaDaoMemoria(banco);
+            usuarioDao = new UsuarioDaoMemoria(banco);
+            ocorrenciaDao = new OcorrenciaDaoMemoria(banco);
+            apoioDao = new ApoioDaoMemoria(banco);
+            relatorioDao = new RelatorioDaoMemoria(banco);
+        } else {
+            bairroDao = new BairroDaoJdbc();
+            categoriaDao = new CategoriaDaoJdbc();
+            usuarioDao = new UsuarioDaoJdbc();
+            ocorrenciaDao = new OcorrenciaDaoJdbc();
+            apoioDao = new ApoioDaoJdbc();
+            relatorioDao = new RelatorioDaoJdbc();
+        }
 
         BairroService bairroService = new BairroService(bairroDao);
         CategoriaService categoriaService = new CategoriaService(categoriaDao);
@@ -76,16 +102,20 @@ public class Main {
                     new RelatorioHandler(relatorioService));
             servidor.iniciar();
             System.out.println("Avisa Aí: API no ar em http://localhost:" + porta);
-            System.out.println("Persistência: EM MEMÓRIA (provisória; os dados se perdem ao parar).");
-            String falha = ConnectionFactory.testarConexao();
-            if (falha == null) {
-                System.out.println("Conexão com o Oracle: OK.");
+            if (emMemoria) {
+                System.out.println("Persistência: EM MEMÓRIA (provisória; os dados se perdem ao parar).");
             } else {
-                System.out.println("Conexão com o Oracle: FALHOU. " + falha);
+                String falha = ConnectionFactory.testarConexao();
+                if (falha == null) {
+                    System.out.println("Persistência: Oracle. Conexão OK.");
+                } else {
+                    System.out.println("Persistência: Oracle. Conexão FALHOU: " + falha);
+                    System.out.println("A API continua no ar e responde com erro até o banco voltar.");
+                }
             }
         } catch (BindException e) {
             System.err.println("A porta " + porta + " já está em uso. Feche o outro programa ou rode com outra porta:");
-            System.err.println("  java -cp out br.com.avisaai.Main 8081");
+            System.err.println("  java -cp \"out;lib/*\" br.com.avisaai.Main 8081");
         } catch (IOException e) {
             System.err.println("Não foi possível iniciar o servidor: " + e.getMessage());
         }
