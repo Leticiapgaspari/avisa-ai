@@ -6,6 +6,16 @@ public class UsuarioDados {
     private String email;
     private String tipo;
     private Integer idBairro;
+    // só no cadastro; o service transforma em hash
+    private String senha;
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
 
     public String getNome() {
         return nome;

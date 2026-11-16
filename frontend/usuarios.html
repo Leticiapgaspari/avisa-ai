@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Cadastro de moradores e agentes do Avisa Aí.">
   <title>Usuários · Avisa Aí</title>
+  <link rel="stylesheet" href="css/bootstrap-componentes.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 </head>
@@ -105,6 +106,19 @@
             </select>
             <p class="erro-campo" id="erro-bairro"></p>
           </div>
+
+          <!--só no cadastro; some ao editar-->
+          <div class="campo" id="caixa-senha-inicial">
+            <label for="senha-inicial">Senha inicial</label>
+            <div class="campo-senha">
+              <input type="password" id="senha-inicial" name="senha" autocomplete="new-password"
+                     aria-describedby="dica-senha-inicial erro-senha-inicial">
+              <button type="button" class="botao-mostrar" id="mostrar-senha-inicial"
+                      aria-controls="senha-inicial" aria-pressed="false">Mostrar</button>
+            </div>
+            <p class="dica-campo" id="dica-senha-inicial">Passe esta senha para a pessoa. Ela pode trocar no perfil.</p>
+            <p class="erro-campo" id="erro-senha-inicial"></p>
+          </div>
         </div>
 
         <div class="botoes-formulario">
@@ -117,7 +131,7 @@
 
     <section class="painel" aria-labelledby="titulo-lista">
       <div class="titulo-com-acao">
-        <h2 id="titulo-lista">Usuários cadastrados</h2>
+        <h2 id="titulo-lista" tabindex="-1">Usuários cadastrados</h2>
         <span class="texto-suave" id="total-lista" aria-live="polite"></span>
       </div>
       <p class="mensagem" id="mensagem-lista" role="status" aria-live="polite"></p>
@@ -157,6 +171,8 @@
 
   <script src="js/api.js"></script>
   <script src="js/sessao.js"></script>
+  <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/componentes.js"></script>
   <script src="js/usuarios.js"></script>
 </body>
 </html>

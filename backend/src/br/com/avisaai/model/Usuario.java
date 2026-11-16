@@ -35,6 +35,9 @@ public abstract class Usuario implements JsonSerializavel {
 
     public abstract boolean podeEditar(Ocorrencia ocorrencia);
 
+    // bairros, categorias e contas de outras pessoas
+    public abstract boolean podeGerenciarCadastros();
+
     public boolean ehAutorDe(Ocorrencia ocorrencia) {
         return id != null
                 && ocorrencia != null

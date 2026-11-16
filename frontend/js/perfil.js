@@ -108,7 +108,7 @@ async function salvarDados(evento) {
   botaoSalvarDados.disabled = true;
   try {
     // o tipo vai igual, ninguém muda o próprio tipo
-    const conta = await chamarApi("/usuarios" + montarQuery({ id: dadosConta.id }), "PUT", {
+    const conta = await chamarApi("/usuarios" + montarQuery({ id: dadosConta.id, usuario: usuarioAtual.id }), "PUT", {
       nome: campoNome.value.trim(),
       email: campoEmail.value.trim(),
       idBairro: Number(campoBairro.value),
@@ -138,7 +138,7 @@ async function salvarDados(evento) {
 async function carregarDados(usuario) {
   try {
     const respostas = await Promise.all([
-      chamarApi("/usuarios" + montarQuery({ id: usuario.id })),
+      chamarApi("/usuarios" + montarQuery({ id: usuario.id, usuario: usuario.id })),
       chamarApi("/bairros")
     ]);
     dadosConta = respostas[0];
@@ -217,7 +217,7 @@ async function trocarSenha(evento) {
 
   botaoTrocarSenha.disabled = true;
   try {
-    await chamarApi("/usuarios/senha" + montarQuery({ id: usuarioAtual.id }), "PUT", {
+    await chamarApi("/usuarios/senha" + montarQuery({ id: usuarioAtual.id, usuario: usuarioAtual.id }), "PUT", {
       senhaAtual: campoSenhaAtual.value,
       novaSenha: campoSenhaNova.value
     });

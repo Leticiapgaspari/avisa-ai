@@ -247,8 +247,3 @@ limparErroAoCorrigir(formCadastro);
 
 mostrarAba(abaDoEndereco(), false);
 carregarBairrosCadastro();
-
-// "Contas para testar" só aparece com os dados provisórios
-if (typeof USAR_DADOS_PROVISORIOS !== "undefined" && USAR_DADOS_PROVISORIOS) {
-  document.getElementById("contas-teste").hidden = false;
-}

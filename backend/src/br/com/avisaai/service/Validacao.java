@@ -4,7 +4,7 @@ import br.com.avisaai.exception.RegraNegocioException;
 
 final class Validacao {
 
-    static final String MSG_USUARIO_OBRIGATORIO = "Informe o usuário que está realizando a operação.";
+    static final String MSG_USUARIO_OBRIGATORIO = "Informe o usuário que está fazendo a operação.";
 
     private Validacao() {
     }

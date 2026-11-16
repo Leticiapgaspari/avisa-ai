@@ -620,7 +620,6 @@ textarea:disabled {
   font-weight: 600;
 }
 
-.aviso-usuario,
 .aviso {
   margin: 0 0 16px;
   padding: 8px 16px;
@@ -3005,11 +3004,6 @@ main.pagina-painel {
   padding-right: 10px;
 }
 
-/* a confirmação de exclusão desce para baixo do nome */
-.pagina-gestao .lista-simples li.confirmando {
-  flex-wrap: wrap;
-}
-
 .pagina-gestao .gestao-item {
   display: flex;
   flex-direction: column;
@@ -3025,14 +3019,6 @@ main.pagina-painel {
   flex: none;
   flex-wrap: nowrap;
   gap: 4px;
-}
-
-.pagina-gestao .confirmacao {
-  padding: 8px 12px;
-}
-
-.pagina-gestao .confirmacao .botao {
-  min-height: 36px;
 }
 
 /* "Em uso" fica desabilitado, mas legível */
@@ -3125,15 +3111,18 @@ main.pagina-perfil,
 }
 
 /* senha com botão Mostrar */
-.pagina-perfil .campo-senha {
+.pagina-perfil .campo-senha,
+.pagina-usuarios .campo-senha {
   position: relative;
 }
 
-.pagina-perfil .campo-senha input {
+.pagina-perfil .campo-senha input,
+.pagina-usuarios .campo-senha input {
   padding-right: 100px;
 }
 
-.pagina-perfil .botao-mostrar {
+.pagina-perfil .botao-mostrar,
+.pagina-usuarios .botao-mostrar {
   position: absolute;
   top: 4px;
   right: 4px;
@@ -3149,12 +3138,21 @@ main.pagina-perfil,
   cursor: pointer;
 }
 
-.pagina-perfil .botao-mostrar:hover {
+.pagina-perfil .botao-mostrar:hover,
+.pagina-usuarios .botao-mostrar:hover {
   background: var(--azul-fundo);
 }
 
-.pagina-perfil .botao-mostrar:focus-visible {
+.pagina-perfil .botao-mostrar:focus-visible,
+.pagina-usuarios .botao-mostrar:focus-visible {
   outline-offset: 0;
+}
+
+/* texto de ajuda embaixo do campo */
+.pagina-usuarios .dica-campo {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  color: var(--texto-suave);
 }
 
 /* botão Trocar senha */
@@ -3312,14 +3310,6 @@ main.pagina-perfil,
 
 .pagina-usuarios .acoes-linha {
   gap: 4px;
-}
-
-.pagina-usuarios .confirmacao {
-  padding: 8px 12px;
-}
-
-.pagina-usuarios .confirmacao .botao {
-  min-height: 36px;
 }
 
 /* ========== Cabeçalho: botão de registrar e menu da conta ========== */
@@ -3674,5 +3664,107 @@ main.pagina-perfil,
     outline: 3px solid var(--azul-claro);
     outline-offset: 2px;
     opacity: 1;
+  }
+}
+
+/* ========== Bootstrap: janela de confirmação e avisos ========== */
+/* as variáveis --bs-* recebem as cores do projeto */
+
+.modal {
+  --bs-modal-width: 440px;
+  --bs-modal-padding: 24px;
+  --bs-modal-margin: 16px;
+  --bs-modal-color: var(--texto);
+  --bs-modal-bg: var(--superficie);
+  --bs-modal-border-color: var(--borda);
+  --bs-modal-border-radius: var(--raio);
+  --bs-modal-inner-border-radius: calc(var(--raio) - 1px);
+  --bs-modal-header-padding: 24px 24px 0;
+  --bs-modal-header-border-width: 0;
+  --bs-modal-footer-border-width: 0;
+  --bs-modal-footer-gap: 8px;
+  --bs-modal-title-line-height: 1.2;
+  font-family: var(--fonte-texto);
+}
+
+.modal-backdrop {
+  --bs-backdrop-bg: var(--azul-noite);
+  --bs-backdrop-opacity: 0.55;
+}
+
+.modal-content {
+  box-shadow: 0 16px 40px rgba(15, 27, 61, 0.18);
+}
+
+.modal-title {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--azul-noite);
+}
+
+.modal-body p {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+.modal-footer {
+  gap: 8px;
+}
+
+.modal-footer .botao {
+  min-height: 44px;
+  margin: 0;
+}
+
+/* avisos no canto de baixo; no celular, acima da barra inferior */
+.area-avisos {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1090;
+}
+
+.toast.aviso-sucesso {
+  --bs-toast-max-width: 360px;
+  --bs-toast-padding-x: 16px;
+  --bs-toast-padding-y: 12px;
+  --bs-toast-font-size: 1rem;
+  --bs-toast-color: var(--sucesso);
+  --bs-toast-bg: var(--sucesso-fundo);
+  --bs-toast-border-width: 0;
+  --bs-toast-border-radius: var(--raio-pequeno);
+  --bs-toast-box-shadow: 0 8px 24px rgba(15, 27, 61, 0.14);
+  border-left: 4px solid var(--sucesso);
+  font-weight: 600;
+}
+
+.aviso-sucesso .toast-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aviso-sucesso .btn-close {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+@media (max-width: 879.98px) {
+  .area-avisos {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    width: auto;
+  }
+
+  body.tem-barra-inferior .area-avisos {
+    bottom: calc(var(--altura-barra) + 16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .toast.aviso-sucesso {
+    --bs-toast-max-width: none;
+    width: 100%;
   }
 }

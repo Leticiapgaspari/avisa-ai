@@ -1,20 +1,15 @@
 # Contrato de persistência do backend
 
-O que o backend em Java espera da camada de banco, para integrar o trabalho do SQL sem mexer em regra de negócio.
+O que o backend em Java espera da camada de banco, e como a persistência no Oracle está organizada.
 
-## Como está hoje
+## Organização
 
 - Os contratos são as interfaces em `backend/src/br/com/avisaai/dao/`: `BairroDao`, `CategoriaDao`, `UsuarioDao`, `OcorrenciaDao`, `ApoioDao` e `RelatorioDao`.
-- Quem implementa hoje é o pacote `dao/memoria/`. Essa implementação é **PROVISÓRIA**: guarda tudo em memória, traz a mesma carga de exemplo do `sql/avisa_ai.sql` e perde os dados quando o servidor para.
-- Os services só conhecem as interfaces. Trocar a implementação não muda nenhuma regra, rota ou JSON.
+- Cada contrato é implementado por uma classe JDBC no mesmo pacote: `BairroDaoJdbc`, `CategoriaDaoJdbc`, `UsuarioDaoJdbc`, `OcorrenciaDaoJdbc`, `ApoioDaoJdbc` e `RelatorioDaoJdbc`. O `Main.java` liga essas classes aos services.
+- O `dao` é o único pacote com SQL e com `java.sql`. Os services só conhecem as interfaces.
+- As tabelas e a carga de exemplo vêm do `sql/avisa_ai.sql`. As consultas dos relatórios estão em `sql/relatorios.sql`.
 
-## O que falta para integrar
-
-1. Criar uma classe JDBC para cada interface, por exemplo `BairroDaoJdbc implements BairroDao`, no pacote `dao`. Pela especificação, o `dao` é o único pacote com SQL e com `java.sql`.
-2. Em `Main.java`, trocar as linhas do bloco marcado como "PERSISTÊNCIA PROVISÓRIA" pelas classes JDBC.
-3. Apagar o pacote `dao/memoria/` quando tudo estiver ligado ao Oracle.
-
-A conexão já está pronta: `ConnectionFactory.getConnection()` lê o `backend/db.properties` e devolve uma `Connection` com o Oracle. Ela já foi testada no servidor da FIAP. Se o arquivo ou o driver faltar, ou o banco não responder, ela lança `DadosException`. Use com try-with-resources:
+A conexão vem de `ConnectionFactory.getConnection()`, que lê o `backend/db.properties` e devolve uma `Connection` com o Oracle. Se o arquivo ou o driver faltar, ou se o banco não responder, ela lança `DadosException`. Todos os DAOs usam assim, com try-with-resources e `PreparedStatement` com `?`:
 
 ```java
 try (Connection con = ConnectionFactory.getConnection();
@@ -54,12 +49,16 @@ O formato é o mesmo para as duas tabelas (`BAIRRO`/`ID_BAIRRO` e `CATEGORIA`/`I
 
 | Método | Recebe | Devolve | Comportamento esperado |
 |---|---|---|---|
-| `inserir` | `Usuario` com nome, email, `getTipo()` e `bairro.id` | o usuário com `id` | E-mail repetido: `DUPLICADO` |
+| `inserir` | `Usuario` com nome, email, `getTipo()` e `bairro.id`, e `String senhaHash` | o usuário com `id` | Grava o hash em `SENHA_HASH`. E-mail repetido: `DUPLICADO` |
 | `listar` | nada | `List<Usuario>` | Ordem alfabética de nome, com bairro (id e nome) |
 | `buscarPorId` | `int id` | `Usuario` ou `null` | Com bairro (id e nome) |
-| `buscarPorEmail` | `String email` | `Usuario` ou `null` | **Operação extra**, fora do CRUD. Comparação exata: o service já grava o e-mail em minúsculas. |
-| `atualizar` | `Usuario` com `id` | `boolean` | Altera nome, email, tipo e bairro. E-mail repetido: `DUPLICADO` |
+| `buscarPorEmail` | `String email` | `Usuario` ou `null` | **Operação extra**, fora do CRUD. Comparação exata: o service já grava o e-mail em minúsculas. Usada também no login. |
+| `atualizar` | `Usuario` com `id` | `boolean` | Altera nome, email, tipo e bairro. **Não mexe na senha.** E-mail repetido: `DUPLICADO` |
 | `excluir` | `int id` | `boolean` | Os apoios do usuário saem junto. Usuário autor de ocorrências: `EM_USO` |
+| `buscarSenhaHash` | `int id` | `String` ou `null` | **Operação extra**, para o login e a troca de senha conferirem a senha. Devolve o conteúdo de `SENHA_HASH`. |
+| `atualizarSenhaHash` | `int id`, `String senhaHash` | `boolean` | **Operação extra**, troca de senha. `false` se o id não existe. |
+
+**Senha:** o DAO só recebe e devolve o hash, já calculado pelo service (SHA-256 em hexadecimal minúsculo, 64 caracteres). Ele nunca vê a senha em texto. O hash fica fora do model `Usuario`, para nunca ir parar num JSON.
 
 **Montagem a partir do banco:** use `Usuario.criar(rs.getString("TIPO"))`. Esse método devolve um `Cidadao` ou um `Agente`, e é isso que faz as permissões funcionarem.
 
@@ -87,6 +86,9 @@ Toda ocorrência devolvida deve vir **completa e de uma vez só**, numa consulta
 | `inserir` | `Apoio` (usuario.id, ocorrencia.id, dataApoio) | nada | Par repetido: `DUPLICADO`. O service transforma em "Você já apoiou esta ocorrência." |
 | `excluir` | `int idUsuario, int idOcorrencia` | `boolean` | |
 | `existe` | `int idUsuario, int idOcorrencia` | `boolean` | |
+| `listarOcorrenciasApoiadas` | `int idUsuario` | `List<Integer>` | Ids das ocorrências que o usuário apoiou, em ordem crescente. Lista vazia se ele não apoiou nenhuma. Usado pela tela de ocorrências para mostrar "Apoiado" e "Retirar apoio". |
+
+Não há `atualizar`: o apoio é só o par (usuário, ocorrência). Mudar um apoio é excluir e inserir de novo.
 
 ### RelatorioDao
 
@@ -99,17 +101,17 @@ As consultas são as do `sql/relatorios.sql`. O backend só precisa que cada lin
 | `porStatus` | `LinhaRelatorio(nome, total)` | `{"nome":"ABERTA","total":6}` |
 | `rankingApoios` | `LinhaRanking(id, titulo, nomeDoBairro, status, totalApoios)` | `{"id":1,"titulo":"...","bairro":"Jardim das Flores","status":"ABERTA","totalApoios":5}` |
 
-A ordem das linhas é a que a consulta devolver. A versão em memória faz uma aproximação (maior total primeiro). Para os resultados oficiais, valem as consultas do responsável pelo banco.
+A ordem das linhas é a que a consulta devolver: bairro e categoria por total decrescente e depois por nome; ranking por total de apoios decrescente e depois pela data de abertura mais recente.
 
 ## Dados que o backend persiste
 
-O backend precisa guardar e ler estes dados. Os nomes das colunas são definidos pelo responsável pelo banco.
+O backend guarda e lê estes dados. As tabelas e colunas estão definidas no `sql/avisa_ai.sql`.
 
 | Entidade | Campos | Restrições que o backend espera do banco |
 |---|---|---|
 | Bairro | id (gerado), nome | nome único |
 | Categoria | id (gerado), nome | nome único |
-| Usuário | id (gerado), nome, email, tipo (`CIDADAO`/`AGENTE`), bairro | email único; bairro existente |
+| Usuário | id (gerado), nome, email, hash da senha (`SENHA_HASH`, 64 caracteres), tipo (`CIDADAO`/`AGENTE`), bairro | email único; bairro existente; hash obrigatório |
 | Ocorrência | id (gerado), titulo, descricao (opcional), endereco, status (`ABERTA`/`EM_ANDAMENTO`/`RESOLVIDA`), data de abertura, autor, categoria, bairro | chaves estrangeiras para usuário, categoria e bairro |
 | Apoio | usuário, ocorrência, data | par usuário+ocorrência único; sai junto ao excluir a ocorrência ou o usuário |
 

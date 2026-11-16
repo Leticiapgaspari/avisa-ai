@@ -21,4 +21,9 @@ public class Cidadao extends Usuario {
     public boolean podeEditar(Ocorrencia ocorrencia) {
         return ehAutorDe(ocorrencia);
     }
+
+    @Override
+    public boolean podeGerenciarCadastros() {
+        return false;
+    }
 }

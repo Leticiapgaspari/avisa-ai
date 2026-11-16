@@ -8,9 +8,6 @@ public class LinhaRelatorio implements JsonSerializavel {
     private String nome;
     private int total;
 
-    public LinhaRelatorio() {
-    }
-
     public LinhaRelatorio(String nome, int total) {
         this.nome = nome;
         this.total = total;

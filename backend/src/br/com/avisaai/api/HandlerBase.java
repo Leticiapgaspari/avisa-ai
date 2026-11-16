@@ -9,6 +9,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import br.com.avisaai.exception.DadosException;
+import br.com.avisaai.exception.NaoAutenticadoException;
 import br.com.avisaai.exception.NaoEncontradoException;
 import br.com.avisaai.exception.RegraNegocioException;
 
@@ -84,6 +85,8 @@ public abstract class HandlerBase implements HttpHandler {
             return Resposta.erro(405, MSG_METODO);
         } catch (RegraNegocioException e) {
             return Resposta.erro(400, e.getMessage());
+        } catch (NaoAutenticadoException e) {
+            return Resposta.erro(401, e.getMessage());
         } catch (NaoEncontradoException e) {
             return Resposta.erro(404, e.getMessage());
         } catch (DadosException e) {

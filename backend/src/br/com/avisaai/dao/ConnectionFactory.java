@@ -22,7 +22,7 @@ public final class ConnectionFactory {
     static final String MSG_INCOMPLETO =
             "O arquivo db.properties precisa ter db.url, db.user e db.password preenchidos.";
     static final String MSG_SEM_DRIVER =
-            "Driver do Oracle não encontrado. Coloque o ojdbc11.jar em backend/lib e rode com -cp \"out;lib/*\".";
+            "Driver do Oracle não encontrado. Coloque o ojdbc17.jar em backend/lib e rode com -cp \"out;lib/*\".";
 
     private static Properties configuracao;
 

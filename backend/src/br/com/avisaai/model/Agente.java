@@ -21,4 +21,9 @@ public class Agente extends Usuario {
     public boolean podeEditar(Ocorrencia ocorrencia) {
         return true;
     }
+
+    @Override
+    public boolean podeGerenciarCadastros() {
+        return true;
+    }
 }

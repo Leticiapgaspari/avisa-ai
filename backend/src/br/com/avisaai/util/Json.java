@@ -65,6 +65,17 @@ public final class Json {
         return sb.append(']').toString();
     }
 
+    public static String numeros(List<Integer> valores) {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < valores.size(); i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(numero(valores.get(i)));
+        }
+        return sb.append(']').toString();
+    }
+
     public static String campo(String chave, String valor) {
         return "{" + texto(chave) + ":" + texto(valor) + "}";
     }

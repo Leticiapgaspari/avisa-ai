@@ -24,7 +24,7 @@ let ocorrencias = [];               // última lista recebida do back
 let idEmEdicao = null;              // id da ocorrência sendo editada (null = registrando)
 let idConfirmandoExclusao = null;   // cartão que está mostrando "Excluir mesmo?"
 let mensagemCartao = null;          // { id, texto, tipo } mostrada dentro de um cartão
-const apoiadasNestaSessao = [];     // ids que o usuário atual apoiou nesta visita
+let apoiadas = [];                   // ids das ocorrências que o usuário já apoiou (GET /apoios)
 
 // ---------- carregamento ----------
 
@@ -41,6 +41,15 @@ async function carregarListasDoFormulario() {
     if (!avisarSeSemConexao(erro)) {
       mostrarMensagem(mensagemFormulario, erro.message, "erro");
     }
+  }
+}
+
+async function carregarApoiadas() {
+  try {
+    apoiadas = await chamarApi("/apoios" + montarQuery({ usuario: usuarioAtual.id }));
+  } catch (erro) {
+    // sem a lista, o botão volta a "Também vi isso"; o back recusa apoio repetido
+    apoiadas = [];
   }
 }
 
@@ -102,15 +111,7 @@ function montarColunaApoios(o, permissoes) {
   // o leitor de tela lê "3 apoios Também vi isso"
   const palavraOculta = '<span class="visualmente-oculto"> ' + palavra + " </span>";
 
-  if (!temUsuario()) {
-    return (
-      '<button type="button" class="cartao-apoios apoiar" disabled title="' + AVISO_SEM_USUARIO + '">' +
-      numero + palavraOculta +
-      '<span class="apoios-texto">Também vi isso</span></button>'
-    );
-  }
-
-  const apoiada = apoiadasNestaSessao.includes(o.id);
+  const apoiada = apoiadas.includes(o.id);
   return (
     '<button type="button" class="cartao-apoios apoiar' + (apoiada ? " apoiada" : "") + '" data-acao="apoiar"' +
     ' aria-pressed="' + (apoiada ? "true" : "false") + '">' +
@@ -145,14 +146,11 @@ function montarRodape(o, permissoes) {
     html += "</select></div>";
   }
 
-  if (permissoes.podeApoiar && temUsuario() && apoiadasNestaSessao.includes(o.id)) {
+  if (permissoes.podeApoiar && temUsuario() && apoiadas.includes(o.id)) {
     html += '<button type="button" class="botao botao-leve" data-acao="retirar-apoio">Retirar apoio</button>';
   }
 
-  if (!temUsuario()) {
-    html += '<button type="button" class="botao botao-leve" disabled title="' + AVISO_SEM_USUARIO + '">Editar</button>';
-    html += '<button type="button" class="botao botao-leve-perigo" disabled title="' + AVISO_SEM_USUARIO + '">Excluir</button>';
-  } else if (permissoes.podeAlterar) {
+  if (permissoes.podeAlterar) {
     html += '<button type="button" class="botao botao-leve" data-acao="editar">Editar</button>';
     html += '<button type="button" class="botao botao-leve-perigo" data-acao="excluir">Excluir</button>';
   }
@@ -227,8 +225,8 @@ async function apoiar(id) {
   try {
     await chamarApi("/apoios", "POST", { idUsuario: usuarioAtual.id, idOcorrencia: id });
     o.totalApoios = o.totalApoios + 1;
-    if (!apoiadasNestaSessao.includes(id)) {
-      apoiadasNestaSessao.push(id);
+    if (!apoiadas.includes(id)) {
+      apoiadas.push(id);
     }
     mensagemCartao = { id: id, texto: "Apoio registrado. Obrigado por confirmar.", tipo: "sucesso" };
   } catch (erro) {
@@ -243,7 +241,7 @@ async function retirarApoio(id) {
   try {
     await chamarApi("/apoios" + montarQuery({ usuario: usuarioAtual.id, ocorrencia: id }), "DELETE");
     o.totalApoios = Math.max(0, o.totalApoios - 1);
-    apoiadasNestaSessao.splice(apoiadasNestaSessao.indexOf(id), 1);
+    apoiadas.splice(apoiadas.indexOf(id), 1);
     mensagemCartao = { id: id, texto: "Apoio retirado.", tipo: "sucesso" };
   } catch (erro) {
     mensagemCartao = avisarSeSemConexao(erro) ? null : { id: id, texto: erro.message, tipo: "erro" };
@@ -385,10 +383,6 @@ async function enviarFormulario(evento) {
   evento.preventDefault();
   mostrarMensagem(mensagemFormulario, "");
 
-  if (!temUsuario()) {
-    mostrarMensagem(mensagemFormulario, AVISO_SEM_USUARIO + ".", "erro");
-    return;
-  }
   if (!validarFormulario()) {
     return;
   }
@@ -604,6 +598,7 @@ window.addEventListener("hashchange", focarFormularioSePedido);
 
 async function iniciarPaginaOcorrencias() {
   await carregarListasDoFormulario();
+  await carregarApoiadas();
   aplicarFiltrosDaUrl();
   carregarOcorrencias();
   focarFormularioSePedido();

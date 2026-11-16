@@ -2,8 +2,6 @@
 // No <body>: data-pagina="privada" exige login e "so-agente" exige ser agente.
 // Esconder botão aqui é só pra interface; quem valida de verdade é o back.
 
-const AVISO_SEM_USUARIO = "Escolha um usuário para participar";
-
 const usuarioAtual = lerUsuarioDaSessao();
 
 function lerUsuarioDaSessao() {
@@ -48,10 +46,6 @@ function temUsuario() {
 
 function ehAgente() {
   return temUsuario() && usuarioAtual.tipo === "AGENTE";
-}
-
-function ehCidadao() {
-  return temUsuario() && usuarioAtual.tipo === "CIDADAO";
 }
 
 // manda pro login quem não entrou e pro painel o morador numa página de agente
@@ -108,7 +102,7 @@ async function carregarEmailDaConta() {
     return;
   }
   try {
-    const conta = await chamarApi("/usuarios?id=" + encodeURIComponent(usuarioAtual.id));
+    const conta = await chamarApi("/usuarios" + montarQuery({ id: usuarioAtual.id, usuario: usuarioAtual.id }));
     campoEmail.textContent = conta && conta.email ? conta.email : "";
   } catch (erro) {
     campoEmail.textContent = "";
@@ -200,7 +194,7 @@ function configurarMenuConta() {
     }
   });
 
-  // marca a página atual
+  // aria-current faz o leitor de tela anunciar a página atual
   const pagina = location.pathname.split("/").pop();
   painel.querySelectorAll("a").forEach(function (link) {
     if (link.getAttribute("href") === pagina) {
@@ -289,17 +283,6 @@ function aplicarPermissoes() {
   document.querySelectorAll("[data-so-agente]").forEach(function (elemento) {
     elemento.hidden = !ehAgente();
   });
-
-  // sem login a pessoa só consulta
-  if (!temUsuario()) {
-    document.querySelectorAll("[data-requer-usuario]").forEach(function (elemento) {
-      elemento.disabled = true;
-    });
-    document.querySelectorAll(".aviso-usuario").forEach(function (aviso) {
-      aviso.textContent = AVISO_SEM_USUARIO + ".";
-      aviso.hidden = false;
-    });
-  }
 }
 
 const botaoSair = document.getElementById("botao-sair");

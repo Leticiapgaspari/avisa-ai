@@ -10,6 +10,9 @@ const campoNome = document.getElementById("nome");
 const campoEmail = document.getElementById("email");
 const campoTipo = document.getElementById("tipo");
 const campoBairro = document.getElementById("bairro");
+const caixaSenhaInicial = document.getElementById("caixa-senha-inicial");
+const campoSenhaInicial = document.getElementById("senha-inicial");
+const botaoMostrarSenhaInicial = document.getElementById("mostrar-senha-inicial");
 
 const corpoUsuarios = document.getElementById("corpo-usuarios");
 const mensagemLista = document.getElementById("mensagem-lista");
@@ -19,7 +22,6 @@ const FORMATO_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 let usuarios = [];
 let idEmEdicao = null;
-let idConfirmandoExclusao = null;
 let mensagemLinha = null; // { id, texto, tipo }
 
 // ---------- carregamento ----------
@@ -39,9 +41,8 @@ async function carregarBairros() {
 async function carregarUsuarios() {
   corpoUsuarios.innerHTML = '<tr><td colspan="5" class="lista-estado">Carregando...</td></tr>';
   totalLista.textContent = "";
-  idConfirmandoExclusao = null;
   try {
-    usuarios = await chamarApi("/usuarios");
+    usuarios = await chamarApi("/usuarios" + montarQuery({ usuario: usuarioAtual.id }));
     desenharTabela();
   } catch (erro) {
     usuarios = [];
@@ -59,16 +60,7 @@ function buscarUsuario(id) {
   });
 }
 
-function montarAcoes(u) {
-  if (idConfirmandoExclusao === u.id) {
-    return (
-      '<div class="confirmacao" role="group" aria-label="Confirmar exclusão">' +
-      "<span>Excluir este usuário?</span>" +
-      '<button type="button" class="botao botao-perigo-cheio" data-acao="confirmar-exclusao">Excluir</button>' +
-      '<button type="button" class="botao botao-leve" data-acao="cancelar-exclusao">Cancelar</button>' +
-      "</div>"
-    );
-  }
+function montarAcoes() {
   return (
     '<div class="acoes-linha">' +
     '<button type="button" class="botao botao-leve" data-acao="editar">Editar</button>' +
@@ -85,7 +77,7 @@ function montarLinha(u) {
     '<td data-label="E-mail">' + escaparHtml(u.email) + "</td>" +
     '<td data-label="Tipo"><span class="' + classeTipo + '">' + escaparHtml(NOMES_TIPO[u.tipo] || u.tipo) + "</span></td>" +
     '<td data-label="Bairro">' + escaparHtml(u.bairro ? u.bairro.nome : "") + "</td>" +
-    "<td>" + montarAcoes(u);
+    "<td>" + montarAcoes();
 
   if (mensagemLinha && mensagemLinha.id === u.id) {
     const classe = mensagemLinha.tipo === "erro" ? "mensagem-erro" : "mensagem-sucesso";
@@ -105,42 +97,45 @@ function desenharTabela() {
   totalLista.textContent = usuarios.length === 1 ? "1 usuário" : usuarios.length + " usuários";
 }
 
-function focarNaLinha(id, seletor) {
-  const elemento = corpoUsuarios.querySelector('[data-id="' + id + '"] ' + seletor);
-  if (elemento) {
-    elemento.focus();
+// ---------- exclusão ----------
+
+async function pedirExclusao(id, botao) {
+  const u = buscarUsuario(id);
+  mensagemLinha = null;
+  const confirmou = await perguntarConfirmacao(
+    "Excluir usuário",
+    "A conta de " + u.nome + " (" + u.email + ") será excluída, junto com os apoios dela.",
+    botao
+  );
+  if (confirmou) {
+    excluirUsuario(id);
   }
 }
 
-// ---------- exclusão ----------
-
-async function confirmarExclusao(id) {
+async function excluirUsuario(id) {
   try {
-    await chamarApi("/usuarios" + montarQuery({ id: id }), "DELETE");
-
-    // excluiu a própria conta: sai do sistema
-    if (temUsuario() && usuarioAtual.id === id) {
-      limparUsuarioDaSessao();
-      location.reload();
-      return;
-    }
+    // a própria conta o back recusa; a mensagem aparece na linha
+    await chamarApi("/usuarios" + montarQuery({ id: id, usuario: usuarioAtual.id }), "DELETE");
 
     if (idEmEdicao === id) {
       sairDoModoEdicao();
     }
-    idConfirmandoExclusao = null;
-    mensagemLinha = null;
     usuarios = usuarios.filter(function (u) {
       return u.id !== id;
     });
     desenharTabela();
-    mostrarMensagem(mensagemLista, "Usuário excluído.", "sucesso");
-    preencherAreaUsuario();
+    mostrarMensagem(mensagemLista, "");
+    mostrarAviso("Usuário excluído.");
+    // a linha sumiu, então o foco vai pro título
+    document.getElementById("titulo-lista").focus();
   } catch (erro) {
     // ex.: usuário com ocorrências (a mensagem vem do back)
-    idConfirmandoExclusao = null;
     mensagemLinha = avisarSeSemConexao(erro) ? null : { id: id, texto: erro.message, tipo: "erro" };
     desenharTabela();
+    const botao = corpoUsuarios.querySelector('[data-id="' + id + '"] [data-acao="excluir"]');
+    if (botao) {
+      botao.focus();
+    }
   }
 }
 
@@ -155,6 +150,11 @@ function entrarNoModoEdicao(id) {
   campoEmail.value = u.email;
   campoTipo.value = u.tipo;
   campoBairro.value = u.bairro ? String(u.bairro.id) : "";
+
+  // senha inicial só no cadastro; depois a pessoa troca no perfil
+  campoSenhaInicial.value = "";
+  esconderSenhaInicial();
+  caixaSenhaInicial.hidden = true;
 
   limparErros(formUsuario);
   mostrarMensagem(mensagemFormulario, "");
@@ -171,9 +171,26 @@ function sairDoModoEdicao() {
   idEmEdicao = null;
   formUsuario.reset();
   limparErros(formUsuario);
+  esconderSenhaInicial();
+  caixaSenhaInicial.hidden = false;
   tituloFormulario.textContent = "Cadastrar usuário";
   botaoEnviar.textContent = "Cadastrar";
   botaoCancelar.hidden = true;
+}
+
+// ---------- senha inicial ----------
+
+botaoMostrarSenhaInicial.addEventListener("click", function () {
+  const mostrando = campoSenhaInicial.type === "text";
+  campoSenhaInicial.type = mostrando ? "password" : "text";
+  botaoMostrarSenhaInicial.textContent = mostrando ? "Mostrar" : "Esconder";
+  botaoMostrarSenhaInicial.setAttribute("aria-pressed", mostrando ? "false" : "true");
+});
+
+function esconderSenhaInicial() {
+  campoSenhaInicial.type = "password";
+  botaoMostrarSenhaInicial.textContent = "Mostrar";
+  botaoMostrarSenhaInicial.setAttribute("aria-pressed", "false");
 }
 
 function validarFormulario() {
@@ -209,6 +226,10 @@ function validarFormulario() {
     erro(campoBairro, "Escolha um bairro.");
   }
 
+  if (idEmEdicao === null && campoSenhaInicial.value.length < 6) {
+    erro(campoSenhaInicial, "A senha precisa ter pelo menos 6 caracteres.");
+  }
+
   if (primeiroInvalido) {
     primeiroInvalido.focus();
     return false;
@@ -233,19 +254,20 @@ async function enviarFormulario(evento) {
   botaoEnviar.disabled = true;
   try {
     if (idEmEdicao === null) {
-      await chamarApi("/usuarios", "POST", dados);
+      dados.senha = campoSenhaInicial.value;
+      await chamarApi("/usuarios" + montarQuery({ usuario: usuarioAtual.id }), "POST", dados);
       sairDoModoEdicao();
       mostrarMensagem(mensagemFormulario, "Usuário cadastrado.", "sucesso");
     } else {
       const idEditado = idEmEdicao;
-      await chamarApi("/usuarios" + montarQuery({ id: idEditado }), "PUT", dados);
+      const conta = await chamarApi("/usuarios" + montarQuery({ id: idEditado, usuario: usuarioAtual.id }), "PUT", dados);
       sairDoModoEdicao();
       mostrarMensagem(mensagemFormulario, "Usuário atualizado.", "sucesso");
 
-      // editou a própria conta: atualiza a sessão
+      // usa o tipo que o back gravou, porque ninguém muda o próprio tipo
       if (temUsuario() && usuarioAtual.id === idEditado) {
-        guardarUsuarioNaSessao(idEditado, dados.nome, dados.tipo);
-        if (usuarioAtual.tipo !== dados.tipo) {
+        guardarUsuarioNaSessao(conta.id, conta.nome, conta.tipo);
+        if (usuarioAtual.tipo !== conta.tipo) {
           location.reload(); // o tipo mudou: as permissões da tela mudam também
           return;
         }
@@ -287,16 +309,7 @@ corpoUsuarios.addEventListener("click", function (evento) {
   if (acao === "editar") {
     entrarNoModoEdicao(id);
   } else if (acao === "excluir") {
-    idConfirmandoExclusao = id;
-    mensagemLinha = null;
-    desenharTabela();
-    focarNaLinha(id, "[data-acao='cancelar-exclusao']");
-  } else if (acao === "cancelar-exclusao") {
-    idConfirmandoExclusao = null;
-    desenharTabela();
-    focarNaLinha(id, "[data-acao='excluir']");
-  } else if (acao === "confirmar-exclusao") {
-    confirmarExclusao(id);
+    pedirExclusao(id, botao);
   }
 });
 

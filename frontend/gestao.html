@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Gestão de categorias e bairros do Avisa Aí, restrita a agentes.">
   <title>Gestão · Avisa Aí</title>
+  <link rel="stylesheet" href="css/bootstrap-componentes.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 </head>
@@ -72,7 +73,7 @@
     <div id="conteudo-gestao" class="colunas colunas-iguais">
       <section class="painel" aria-labelledby="titulo-categoria">
         <div class="gestao-titulo">
-          <h2 id="titulo-categoria">Categorias</h2>
+          <h2 id="titulo-categoria" tabindex="-1">Categorias</h2>
           <span class="texto-suave" id="total-categoria"></span>
         </div>
         <form id="form-categoria" novalidate>
@@ -95,7 +96,7 @@
 
       <section class="painel" aria-labelledby="titulo-bairro">
         <div class="gestao-titulo">
-          <h2 id="titulo-bairro">Bairros</h2>
+          <h2 id="titulo-bairro" tabindex="-1">Bairros</h2>
           <span class="texto-suave" id="total-bairro"></span>
         </div>
         <form id="form-bairro" novalidate>
@@ -136,6 +137,8 @@
 
   <script src="js/api.js"></script>
   <script src="js/sessao.js"></script>
+  <script src="js/vendor/bootstrap.min.js"></script>
+  <script src="js/componentes.js"></script>
   <script src="js/gestao.js"></script>
 </body>
 </html>

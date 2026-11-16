@@ -18,11 +18,11 @@ function configurarBloco(config) {
   const mensagem = document.getElementById("mensagem-" + config.prefixo);
   const lista = document.getElementById("lista-" + config.prefixo);
   const total = document.getElementById("total-" + config.prefixo);
+  const titulo = document.getElementById("titulo-" + config.prefixo);
 
   let itens = [];
   let usos = null;                // { "Centro": 3, ... } ou null se o relatório falhar
   let idEmEdicao = null;
-  let idConfirmandoExclusao = null;
 
   // quantas ocorrências usam cada item (o relatório vem como [{ nome, total }])
   async function carregarUsos() {
@@ -42,7 +42,6 @@ function configurarBloco(config) {
   async function carregar() {
     lista.innerHTML = '<li class="lista-estado">Carregando...</li>';
     total.textContent = "";
-    idConfirmandoExclusao = null;
     const promessaUsos = carregarUsos();
     try {
       itens = await chamarApi(config.rota);
@@ -56,17 +55,7 @@ function configurarBloco(config) {
     }
   }
 
-  function montarAcoes(item, emUso) {
-    if (idConfirmandoExclusao === item.id) {
-      return (
-        '<div class="confirmacao" role="group" aria-label="Confirmar exclusão">' +
-        "<span>" + config.textoConfirmar + "</span>" +
-        '<button type="button" class="botao botao-perigo-cheio" data-acao="confirmar-exclusao">Excluir</button>' +
-        '<button type="button" class="botao botao-leve" data-acao="cancelar-exclusao">Cancelar</button>' +
-        "</div>"
-      );
-    }
-
+  function montarAcoes(emUso) {
     const excluir = emUso
       ? '<button type="button" class="botao botao-leve-perigo" disabled title="' + TEXTO_EM_USO + '">Em uso</button>'
       : '<button type="button" class="botao botao-leve-perigo" data-acao="excluir">Excluir</button>';
@@ -95,26 +84,16 @@ function configurarBloco(config) {
       if (item.id === idEmEdicao) {
         classes.push("em-edicao");
       }
-      if (idConfirmandoExclusao === item.id) {
-        classes.push("confirmando");
-      }
       return (
         '<li data-id="' + item.id + '"' + (classes.length ? ' class="' + classes.join(" ") + '"' : "") + ">" +
         '<span class="gestao-item">' +
         '<strong class="nome-item">' + escaparHtml(item.nome) + "</strong>" +
         uso +
         "</span>" +
-        montarAcoes(item, emUso) +
+        montarAcoes(emUso) +
         "</li>"
       );
     }).join("");
-  }
-
-  function focar(id, seletor) {
-    const elemento = lista.querySelector('[data-id="' + id + '"] ' + seletor);
-    if (elemento) {
-      elemento.focus();
-    }
   }
 
   function sairDoModoEdicao() {
@@ -150,10 +129,10 @@ function configurarBloco(config) {
     botaoEnviar.disabled = true;
     try {
       if (idEmEdicao === null) {
-        await chamarApi(config.rota, "POST", dados);
+        await chamarApi(config.rota + montarQuery({ usuario: usuarioAtual.id }), "POST", dados);
         mostrarMensagem(mensagem, config.textoCadastrado, "sucesso");
       } else {
-        await chamarApi(config.rota + montarQuery({ id: idEmEdicao }), "PUT", dados);
+        await chamarApi(config.rota + montarQuery({ id: idEmEdicao, usuario: usuarioAtual.id }), "PUT", dados);
         mostrarMensagem(mensagem, config.textoAtualizado, "sucesso");
       }
       sairDoModoEdicao();
@@ -167,18 +146,27 @@ function configurarBloco(config) {
     }
   }
 
+  async function pedirExclusao(id, botao) {
+    const item = itens.find(function (x) { return x.id === id; });
+    mostrarMensagem(mensagem, "");
+    const confirmou = await perguntarConfirmacao(config.tituloExcluir, config.textoConfirmar.replace("{nome}", item.nome), botao);
+    if (confirmou) {
+      excluir(id);
+    }
+  }
+
   async function excluir(id) {
     try {
-      await chamarApi(config.rota + montarQuery({ id: id }), "DELETE");
+      await chamarApi(config.rota + montarQuery({ id: id, usuario: usuarioAtual.id }), "DELETE");
       if (idEmEdicao === id) {
         sairDoModoEdicao();
       }
-      mostrarMensagem(mensagem, config.textoExcluido, "sucesso");
+      mostrarAviso(config.textoExcluido);
+      // o item vai sumir, então o foco vai pro título
+      titulo.focus();
       carregar();
     } catch (erro) {
       // ex.: item em uso (a mensagem vem do back)
-      idConfirmandoExclusao = null;
-      desenhar();
       if (!avisarSeSemConexao(erro)) {
         mostrarMensagem(mensagem, erro.message, "erro");
       }
@@ -213,16 +201,7 @@ function configurarBloco(config) {
       desenhar();
       campoNome.focus();
     } else if (acao === "excluir") {
-      idConfirmandoExclusao = id;
-      mostrarMensagem(mensagem, "");
-      desenhar();
-      focar(id, "[data-acao='cancelar-exclusao']");
-    } else if (acao === "cancelar-exclusao") {
-      idConfirmandoExclusao = null;
-      desenhar();
-      focar(id, "[data-acao='excluir']");
-    } else if (acao === "confirmar-exclusao") {
-      excluir(id);
+      pedirExclusao(id, botao);
     }
   });
 
@@ -236,7 +215,8 @@ if (ehAgente()) {
     nomeSingular: "categoria",
     nomePlural: "categorias",
     textoVazio: "Nenhuma categoria cadastrada.",
-    textoConfirmar: "Excluir esta categoria?",
+    tituloExcluir: "Excluir categoria",
+    textoConfirmar: "A categoria \"{nome}\" será excluída.",
     textoCadastrado: "Categoria cadastrada.",
     textoAtualizado: "Categoria atualizada.",
     textoExcluido: "Categoria excluída."
@@ -248,7 +228,8 @@ if (ehAgente()) {
     nomeSingular: "bairro",
     nomePlural: "bairros",
     textoVazio: "Nenhum bairro cadastrado.",
-    textoConfirmar: "Excluir este bairro?",
+    tituloExcluir: "Excluir bairro",
+    textoConfirmar: "O bairro \"{nome}\" será excluído.",
     textoCadastrado: "Bairro cadastrado.",
     textoAtualizado: "Bairro atualizado.",
     textoExcluido: "Bairro excluído."

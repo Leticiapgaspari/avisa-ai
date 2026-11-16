@@ -1,6 +1,7 @@
 package br.com.avisaai.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import br.com.avisaai.dao.ApoioDao;
 import br.com.avisaai.dao.OcorrenciaDao;
@@ -35,10 +36,7 @@ public class ApoioService {
         if (idUsuario == null || idOcorrencia == null) {
             throw new RegraNegocioException(MSG_OBRIGATORIOS);
         }
-        Usuario usuario = usuarioDao.buscarPorId(idUsuario);
-        if (usuario == null) {
-            throw new NaoEncontradoException(UsuarioService.MSG_NAO_ENCONTRADO);
-        }
+        Usuario usuario = Permissao.quemAge(usuarioDao, idUsuario);
         Ocorrencia ocorrencia = ocorrenciaDao.buscarPorId(idOcorrencia);
         if (ocorrencia == null) {
             throw new NaoEncontradoException(OcorrenciaService.MSG_NAO_ENCONTRADA);
@@ -65,6 +63,11 @@ public class ApoioService {
             }
             throw e;
         }
+    }
+
+    public List<Integer> listarOcorrenciasApoiadas(Integer idUsuario) {
+        Permissao.quemAge(usuarioDao, idUsuario);
+        return dao.listarOcorrenciasApoiadas(idUsuario);
     }
 
     public void remover(Integer idUsuario, Integer idOcorrencia) {

@@ -16,26 +16,27 @@ public class UsuarioHandler extends HandlerBase {
     @Override
     protected Resposta get(Requisicao req) {
         Integer id = req.parametroInteiro("id");
+        Integer usuario = req.parametroInteiro("usuario");
         if (id != null) {
-            return Resposta.ok(service.buscar(id).toJson());
+            return Resposta.ok(service.buscar(id, usuario).toJson());
         }
-        return Resposta.ok(Json.lista(service.listar()));
+        return Resposta.ok(Json.lista(service.listar(usuario)));
     }
 
     @Override
     protected Resposta post(Requisicao req) {
-        return Resposta.criado(service.criar(lerDados(req)).toJson());
+        return Resposta.criado(service.criar(lerDados(req), req.parametroInteiro("usuario")).toJson());
     }
 
     @Override
     protected Resposta put(Requisicao req) {
         int id = req.id();
-        return Resposta.ok(service.atualizar(id, lerDados(req)).toJson());
+        return Resposta.ok(service.atualizar(id, lerDados(req), req.parametroInteiro("usuario")).toJson());
     }
 
     @Override
     protected Resposta delete(Requisicao req) {
-        service.excluir(req.id());
+        service.excluir(req.id(), req.parametroInteiro("usuario"));
         return Resposta.mensagem("Usuário excluído com sucesso.");
     }
 
@@ -45,6 +46,7 @@ public class UsuarioHandler extends HandlerBase {
         dados.setEmail(req.texto("email"));
         dados.setTipo(req.texto("tipo"));
         dados.setIdBairro(req.inteiro("idBairro"));
+        dados.setSenha(req.texto("senha"));
         return dados;
     }
 }

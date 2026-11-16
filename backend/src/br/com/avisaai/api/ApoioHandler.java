@@ -1,6 +1,7 @@
 package br.com.avisaai.api;
 
 import br.com.avisaai.service.ApoioService;
+import br.com.avisaai.util.Json;
 
 public class ApoioHandler extends HandlerBase {
 
@@ -12,10 +13,14 @@ public class ApoioHandler extends HandlerBase {
     }
 
     @Override
+    protected Resposta get(Requisicao req) {
+        return Resposta.ok(Json.numeros(service.listarOcorrenciasApoiadas(req.parametroInteiro("usuario"))));
+    }
+
+    @Override
     protected Resposta post(Requisicao req) {
         service.apoiar(req.inteiro("idUsuario"), req.inteiro("idOcorrencia"));
-        Resposta ok = Resposta.mensagem("Apoio registrado com sucesso.");
-        return new Resposta(201, ok.getJson());
+        return Resposta.criado(Json.campo("mensagem", "Apoio registrado com sucesso."));
     }
 
     @Override

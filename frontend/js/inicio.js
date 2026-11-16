@@ -173,7 +173,7 @@ async function carregarMeuBairro(usuario) {
   titulo.textContent = "No seu bairro";
 
   try {
-    const dadosUsuario = await chamarApi("/usuarios?id=" + encodeURIComponent(usuario.id));
+    const dadosUsuario = await chamarApi("/usuarios" + montarQuery({ id: usuario.id, usuario: usuario.id }));
     const bairro = dadosUsuario.bairro;
     if (!bairro) {
       throw new Error("Usuário sem bairro.");

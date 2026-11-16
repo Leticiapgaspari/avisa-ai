@@ -58,7 +58,7 @@ public class OcorrenciaService {
 
     public Ocorrencia criar(OcorrenciaDados dados, Integer idUsuario) {
         validarCampos(dados);
-        Usuario autor = buscarUsuarioQueAge(idUsuario);
+        Usuario autor = Permissao.quemAge(usuarioDao, idUsuario);
 
         Ocorrencia ocorrencia = new Ocorrencia();
         aplicarCampos(ocorrencia, dados);
@@ -72,7 +72,7 @@ public class OcorrenciaService {
 
     public Ocorrencia atualizar(int id, Integer idUsuario, OcorrenciaDados dados) {
         Ocorrencia ocorrencia = buscar(id);
-        Usuario usuario = buscarUsuarioQueAge(idUsuario);
+        Usuario usuario = Permissao.quemAge(usuarioDao, idUsuario);
         if (!usuario.podeEditar(ocorrencia)) {
             throw new RegraNegocioException(MSG_SO_PROPRIAS);
         }
@@ -86,7 +86,7 @@ public class OcorrenciaService {
 
     public Ocorrencia atualizarStatus(int id, Integer idUsuario, String status) {
         buscar(id);
-        Usuario usuario = buscarUsuarioQueAge(idUsuario);
+        Usuario usuario = Permissao.quemAge(usuarioDao, idUsuario);
         if (!usuario.podeMudarStatus()) {
             throw new RegraNegocioException(MSG_SO_AGENTE_STATUS);
         }
@@ -99,7 +99,7 @@ public class OcorrenciaService {
 
     public void excluir(int id, Integer idUsuario) {
         Ocorrencia ocorrencia = buscar(id);
-        Usuario usuario = buscarUsuarioQueAge(idUsuario);
+        Usuario usuario = Permissao.quemAge(usuarioDao, idUsuario);
         if (!usuario.podeEditar(ocorrencia)) {
             throw new RegraNegocioException(MSG_SO_PROPRIAS);
         }
@@ -134,17 +134,6 @@ public class OcorrenciaService {
         ocorrencia.setEndereco(dados.getEndereco().trim());
         ocorrencia.setCategoria(categoria);
         ocorrencia.setBairro(bairro);
-    }
-
-    private Usuario buscarUsuarioQueAge(Integer idUsuario) {
-        if (idUsuario == null) {
-            throw new RegraNegocioException(Validacao.MSG_USUARIO_OBRIGATORIO);
-        }
-        Usuario usuario = usuarioDao.buscarPorId(idUsuario);
-        if (usuario == null) {
-            throw new NaoEncontradoException(UsuarioService.MSG_NAO_ENCONTRADO);
-        }
-        return usuario;
     }
 
     private StatusOcorrencia converterStatus(String texto) {

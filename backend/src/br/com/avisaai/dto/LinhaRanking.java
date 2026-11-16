@@ -11,9 +11,6 @@ public class LinhaRanking implements JsonSerializavel {
     private String status;
     private int totalApoios;
 
-    public LinhaRanking() {
-    }
-
     public LinhaRanking(Integer id, String titulo, String bairro, String status, int totalApoios) {
         this.id = id;
         this.titulo = titulo;

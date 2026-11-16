@@ -23,18 +23,18 @@ public class CategoriaHandler extends HandlerBase {
 
     @Override
     protected Resposta post(Requisicao req) {
-        return Resposta.criado(service.criar(req.texto("nome")).toJson());
+        return Resposta.criado(service.criar(req.texto("nome"), req.parametroInteiro("usuario")).toJson());
     }
 
     @Override
     protected Resposta put(Requisicao req) {
         int id = req.id();
-        return Resposta.ok(service.atualizar(id, req.texto("nome")).toJson());
+        return Resposta.ok(service.atualizar(id, req.texto("nome"), req.parametroInteiro("usuario")).toJson());
     }
 
     @Override
     protected Resposta delete(Requisicao req) {
-        service.excluir(req.id());
+        service.excluir(req.id(), req.parametroInteiro("usuario"));
         return Resposta.mensagem("Categoria excluída com sucesso.");
     }
 }
