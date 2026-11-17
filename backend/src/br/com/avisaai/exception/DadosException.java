@@ -7,11 +7,13 @@ public class DadosException extends RuntimeException {
     public enum Tipo {
         DUPLICADO,
         EM_USO,
+        TEXTO_GRANDE,
         INDISPONIVEL
     }
 
     public static final String MSG_DUPLICADO = "Já existe um registro com este valor.";
     public static final String MSG_EM_USO = "Não é possível excluir: existem ocorrências ligadas a este registro.";
+    public static final String MSG_TEXTO_GRANDE = "Texto maior que o permitido para este campo.";
     public static final String MSG_INDISPONIVEL = "Não foi possível acessar o banco de dados. Tente novamente.";
 
     private final Tipo tipo;
@@ -27,6 +29,10 @@ public class DadosException extends RuntimeException {
 
     public static DadosException emUso(Throwable causa) {
         return new DadosException(Tipo.EM_USO, MSG_EM_USO, causa);
+    }
+
+    public static DadosException textoGrande(Throwable causa) {
+        return new DadosException(Tipo.TEXTO_GRANDE, MSG_TEXTO_GRANDE, causa);
     }
 
     public static DadosException indisponivel(Throwable causa) {

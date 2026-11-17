@@ -74,6 +74,7 @@ public class ApoioService {
         if (idUsuario == null || idOcorrencia == null) {
             throw new RegraNegocioException(MSG_OBRIGATORIOS);
         }
+        Permissao.quemAge(usuarioDao, idUsuario);
         if (!dao.excluir(idUsuario, idOcorrencia)) {
             throw new NaoEncontradoException(MSG_NAO_ENCONTRADO);
         }

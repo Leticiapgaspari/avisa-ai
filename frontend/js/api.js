@@ -50,8 +50,6 @@ async function chamarApi(caminho, metodo, corpo) {
   return dados;
 }
 
-// funções de apoio
-
 const NOMES_STATUS = {
   ABERTA: "Aberta",
   EM_ANDAMENTO: "Em andamento",
@@ -124,9 +122,6 @@ function mostrarMensagem(elemento, texto, tipo) {
     elemento.classList.add(tipo === "erro" ? "mensagem-erro" : "mensagem-sucesso");
   }
 }
-
-// -servidor fora do ar-
-// O aviso aparece uma vez só
 
 function ehErroDeConexao(erro) {
   return Boolean(erro) && erro.message === MENSAGEM_SEM_CONEXAO;

@@ -8,8 +8,6 @@ const QUANTIDADE_PRIORIDADES = 3;   // agente: abertas com mais apoios
 const QUANTIDADE_DO_BAIRRO = 4;     // morador: mais recentes do bairro
 const QUANTIDADE_RECENTES = 5;      // os dois: mais recentes de todos os bairros
 
-// ---------- apoio ----------
-
 function textoEstado(texto, ehErro) {
   return '<p class="painel-estado' + (ehErro ? " erro" : "") + '">' + escaparHtml(texto) + "</p>";
 }
@@ -29,7 +27,6 @@ function ordenarMaisRecentes(lista) {
   });
 }
 
-// "Bom dia" até 11h59, "Boa tarde" até 17h59, "Boa noite" depois
 function saudacaoPelaHora() {
   const hora = new Date().getHours();
   if (hora < 12) {

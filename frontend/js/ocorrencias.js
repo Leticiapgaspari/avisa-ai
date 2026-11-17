@@ -111,10 +111,10 @@ function montarColunaApoios(o, permissoes) {
   // o leitor de tela lê "3 apoios Também vi isso"
   const palavraOculta = '<span class="visualmente-oculto"> ' + palavra + " </span>";
 
+  // já apoiada: o botão fica desabilitado; retirar é pelo "Retirar apoio" do rodapé
   const apoiada = apoiadas.includes(o.id);
   return (
-    '<button type="button" class="cartao-apoios apoiar' + (apoiada ? " apoiada" : "") + '" data-acao="apoiar"' +
-    ' aria-pressed="' + (apoiada ? "true" : "false") + '">' +
+    '<button type="button" class="cartao-apoios apoiar' + (apoiada ? ' apoiada" disabled>' : '" data-acao="apoiar">') +
     numero + palavraOculta +
     '<span class="apoios-texto">' + (apoiada ? "Apoiado" : "Também vi isso") + "</span></button>"
   );
@@ -233,7 +233,7 @@ async function apoiar(id) {
     mensagemCartao = avisarSeSemConexao(erro) ? null : { id: id, texto: erro.message, tipo: "erro" };
   }
   desenharLista();
-  focarNoCartao(id, "[data-acao='apoiar']");
+  focarNoCartao(id, apoiadas.includes(id) ? "[data-acao='retirar-apoio']" : "[data-acao='apoiar']");
 }
 
 async function retirarApoio(id) {
@@ -247,7 +247,7 @@ async function retirarApoio(id) {
     mensagemCartao = avisarSeSemConexao(erro) ? null : { id: id, texto: erro.message, tipo: "erro" };
   }
   desenharLista();
-  focarNoCartao(id, "[data-acao='apoiar']");
+  focarNoCartao(id, apoiadas.includes(id) ? "[data-acao='retirar-apoio']" : "[data-acao='apoiar']");
 }
 
 async function mudarStatus(id, novoStatus) {

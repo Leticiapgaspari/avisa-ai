@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.com.avisaai.dao.BairroDao;
 import br.com.avisaai.dao.UsuarioDao;
+import br.com.avisaai.exception.DadosException;
 import br.com.avisaai.exception.NaoEncontradoException;
 import br.com.avisaai.exception.RegraNegocioException;
 import br.com.avisaai.model.Bairro;
@@ -13,6 +14,7 @@ public class BairroService {
     static final String MSG_NAO_ENCONTRADO = "Bairro não encontrado.";
     static final String MSG_SO_AGENTE = "Apenas agentes podem cadastrar, alterar ou excluir bairros.";
     static final String MSG_NOME_CURTO = "Informe um nome com pelo menos 3 caracteres.";
+    static final String MSG_EM_USO = "Não é possível excluir: há ocorrências ou moradores neste bairro.";
     private static final int TAMANHO_MINIMO = 3;
     private static final int TAMANHO_NOME = 80;
 
@@ -54,7 +56,16 @@ public class BairroService {
 
     public void excluir(int id, Integer idUsuario) {
         Permissao.exigirGestor(usuarioDao, idUsuario, MSG_SO_AGENTE);
-        if (!dao.excluir(id)) {
+        boolean excluiu;
+        try {
+            excluiu = dao.excluir(id);
+        } catch (DadosException e) {
+            if (e.getTipo() == DadosException.Tipo.EM_USO) {
+                throw new RegraNegocioException(MSG_EM_USO);
+            }
+            throw e;
+        }
+        if (!excluiu) {
             throw new NaoEncontradoException(MSG_NAO_ENCONTRADO);
         }
     }

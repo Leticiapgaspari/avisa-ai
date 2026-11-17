@@ -1,6 +1,20 @@
 # avisa-ai
 Avisa Aí: projeto comunitário, onde moradores registram e apoiam ocorrências, agentes acompanham a solução. Global Solution FIAP 2026/2 (CitizenTech).
 
+## Proposta
+
+- **Quem é o cidadão beneficiado:** o morador que encontra um problema no espaço público do bairro, como buraco, poste apagado, lixo acumulado ou calçada quebrada. Ele não precisa saber a quem reclamar: registra pelo site, do celular ou do computador.
+- **Qual problema é resolvido:** sem um canal comum, o mesmo problema pode ser avisado várias vezes, por canais diferentes, e quem cuida da cidade não sabe o que afeta mais gente. O morador também fica sem saber se o aviso foi visto.
+- **Como a solução funciona:** o morador registra a ocorrência com título, endereço, categoria e bairro. Quem viu o mesmo problema clica em "Também vi isso" em vez de abrir outro aviso. O agente vê primeiro as abertas com mais apoios e muda o status de Aberta para Em andamento e Resolvida.
+- **Quais tecnologias são usadas:** back-end em Java com JDBC e banco Oracle, e front-end em HTML, CSS e JavaScript que lê e grava os dados pela API. Os detalhes estão nas seções Front-end, Back-end e Banco de dados.
+- **Quem participa do ecossistema:** o morador, que registra e acompanha; os vizinhos, que confirmam o problema com o apoio; e o agente público, que prioriza, atualiza o status e cuida dos cadastros de bairros, categorias e usuários.
+- **Como o impacto é medido:** a tela de Relatórios mostra quantas ocorrências já foram resolvidas, o total de ocorrências por bairro e por categoria, o total de apoios e o ranking das mais apoiadas. Assim dá para ver onde os problemas se concentram e o que ainda está pendente.
+
+## ODS
+
+- **ODS 11, Cidades e comunidades sustentáveis:** o projeto se liga à meta 11.3, de planejamento e gestão participativos, porque o morador passa a participar da zeladoria do bairro e o apoio dos vizinhos mostra ao poder público o que é prioridade. Também se liga à meta 11.7, de acesso a espaços públicos seguros e acessíveis, porque as ocorrências são problemas desses espaços: buraco, iluminação, lixo e sinalização.
+- **ODS 10, Redução das desigualdades:** uma das categorias é "Calçada e acessibilidade". Calçada quebrada ou sem rampa pesa mais para quem usa cadeira de rodas e para idosos. Registrar e priorizar esses problemas contribui para a meta 10.2, de inclusão de todas as pessoas, independentemente de idade ou deficiência.
+
 ## Como rodar
 
 Pré-requisitos: **JDK 17 ou mais novo** e o **SQL Developer** (ou outro cliente Oracle).
@@ -76,15 +90,35 @@ avisa-ai/
 
 ### Diagrama de classes
 
-[![Diagrama de classes](docs/diagrama-classes.png)]
+Dividido em 4 partes para ficar legível. Cada parte diz no topo o que foi omitido (getters, setters e construtores). A versão com todas as classes e todos os métodos está em [`docs/diagrama-classes-completo.png`](docs/diagrama-classes-completo.png).
+
+**1. Entidades (`model`)**
+
+![Diagrama de classes: entidades](docs/diagrama-classes-1-entidades.png)
+
+**2. Acesso ao banco (`dao`)**
+
+![Diagrama de classes: acesso ao banco](docs/diagrama-classes-2-dao.png)
+
+**3. Regras de negócio (`service`)**
+
+![Diagrama de classes: regras de negócio](docs/diagrama-classes-3-service.png)
+
+**4. API, exceções e utilitários (`api`, `exception`, `util`)**
+
+![Diagrama de classes: API, exceções e utilitários](docs/diagrama-classes-4-api.png)
 
 ### Diagrama entidade-relacionamento
 
-[![Diagrama entidade-relacionamento](docs/diagrama-er.png)]
+![Diagrama entidade-relacionamento](docs/diagrama-er.png)
 
 ## Segurança
 
 > O back confia no parâmetro `?usuario` enviado pelo front para saber quem está agindo. Num sistema real, usaríamos um token de sessão gerado pelo servidor no login.
+>
+> As senhas são guardadas com hash SHA-256, sem salt, então senhas iguais geram o mesmo hash. Num sistema real, usaríamos PBKDF2 com salt (`PBKDF2WithHmacSHA256`, que já vem no Java).
+>
+> Cada requisição abre uma conexão nova com o Oracle. Num sistema real, usaríamos um pool de conexões.
 
 ## Créditos
 

@@ -227,8 +227,6 @@ async function trocarSenha(evento) {
   } catch (erro) {
     if (!avisarSeSemConexao(erro)) {
       mostrarMensagem(mensagemSenha, erro.message, "erro");
-    }
-    if (erro.message === "A senha atual não confere.") {
       campoSenhaAtual.focus();
     }
   } finally {

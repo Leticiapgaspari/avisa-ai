@@ -48,7 +48,6 @@ public class Main {
             }
         }
 
-        // DAOs do Oracle (conexão no backend/db.properties)
         BairroDao bairroDao = new BairroDaoJdbc();
         CategoriaDao categoriaDao = new CategoriaDaoJdbc();
         UsuarioDao usuarioDao = new UsuarioDaoJdbc();
